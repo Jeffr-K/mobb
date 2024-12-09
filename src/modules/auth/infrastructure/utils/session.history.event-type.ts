@@ -1,0 +1,9 @@
+export enum SessionHistoryEventType {
+  LOGIN = 'LOGIN',
+  LOGOUT = 'LOGOUT',
+  REFRESH = 'REFRESH',
+  INVALIDATE = 'INVALIDATE',
+  REVOKE = 'REVOKE',
+  EXPIRE = 'EXPIRE',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+}

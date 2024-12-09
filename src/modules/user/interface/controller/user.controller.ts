@@ -1,0 +1,101 @@
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import {
+  UserDropdownCommandAdapter,
+  UserEditEmailCommandAdapter,
+  UserEditPasswordCommandAdapter,
+  UserRegisterCommandAdapter,
+} from '@modules/user/interface/adapter/in/user.register.adapter';
+import {
+  UserDropdownCommand,
+  UserEditEmailCommand,
+  UserEditPasswordCommand,
+  UserRegisterCommand,
+} from '@modules/user/core/command/user.command.event';
+import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
+import { UseSearchModelSerializer } from '@modules/user/interface/adapter/out/user.serializer';
+import { UserSearchQuery, UsersSearchQuery } from '@modules/user/core/query/user.query.event';
+import { User } from '@modules/user/core/entity/user';
+
+@Controller({ path: 'user', version: ['1'] })
+export class UserController {
+  constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
+
+  @Post('/')
+  async register(@Body() adapter: UserRegisterCommandAdapter): Promise<void> {
+    try {
+      await this.commandBus.execute(
+        new UserRegisterCommand(
+          adapter.username,
+          adapter.nickname,
+          adapter.password,
+          adapter.email,
+          adapter.agreements,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  @Delete('/')
+  async dropdown(@Body() adapter: UserDropdownCommandAdapter): Promise<void> {
+    await this.commandBus.execute(new UserDropdownCommand(adapter.email));
+  }
+
+  @Patch('/password')
+  async editPassword(@Body() adapter: UserEditPasswordCommandAdapter): Promise<void> {
+    await this.commandBus.execute(
+      new UserEditPasswordCommand({
+        userId: adapter.userId,
+        password: adapter.password,
+        newPassword: adapter.newPassword,
+      }),
+    );
+  }
+
+  @Patch('/email')
+  async editEmail(@Body() adapter: UserEditEmailCommandAdapter): Promise<void> {
+    await this.commandBus.execute(
+      new UserEditEmailCommand({
+        userId: adapter.userId,
+        email: adapter.email,
+        newEmail: adapter.newEmail,
+      }),
+    );
+  }
+
+  @Get('/')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async user(@Query('id') id: number): Promise<UseSearchModelSerializer> {
+    const user = await this.queryBus.execute(new UserSearchQuery(id));
+
+    return new UseSearchModelSerializer(user);
+  }
+
+  @Get('/list')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async users(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('offset', ParseIntPipe) offset: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<UseSearchModelSerializer[]> {
+    const users = await this.queryBus.execute(new UsersSearchQuery({ page, offset, limit }));
+
+    return users.map((user: User) => new UseSearchModelSerializer(user));
+  }
+}
