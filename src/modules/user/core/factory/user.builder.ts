@@ -4,7 +4,7 @@ import { Username } from '../value/embeddable/username';
 import { Password } from '../value/embeddable/password';
 import { Email } from '../value/embeddable/email';
 import { Agreements } from '../value/embeddable/agreements';
-import { Timestamp } from '../../../../infrastructure/database/postgres/timestamp';
+import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import day from 'dayjs';
 
 export interface UserBuilder {

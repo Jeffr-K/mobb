@@ -1,10 +1,10 @@
 import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
-import { EducationRepository } from '../../infrastructure/repository/education.repository';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
+import { LibraryRepository } from '@modules/bootcamp/infrastructure/repository/library.repository';
 
-@Entity({ repository: () => EducationRepository })
-export class Education {
-  [EntityRepositoryType]?: EducationRepository;
+@Entity({ repository: () => LibraryRepository })
+export class Library {
+  [EntityRepositoryType]?: LibraryRepository;
 
   @PrimaryKey({ autoincrement: true })
   _id!: number;
