@@ -1,4 +1,4 @@
-import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
+import { Embedded, Entity, EntityRepositoryType, Enum, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { UserRepository } from '@modules/user/infrastructure/repository/user.repository';
 import { UserDropdownCommand, UserRegisterCommand } from '@modules/user/core/command/user.command.event';
@@ -12,6 +12,7 @@ import { Agreements } from '@modules/user/core/value/embeddable/agreements';
 import { AggregateRoot } from '@nestjs/cqrs';
 
 import day from 'dayjs';
+import { Role } from '@modules/user/core/value/enum/role';
 
 @Entity({ repository: () => UserRepository })
 export class User extends AggregateRoot {
@@ -22,6 +23,9 @@ export class User extends AggregateRoot {
 
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
+
+  @Enum({ items: () => Role, default: Role.USER, nullable: true })
+  role: Role;
 
   @Embedded(() => Username, { prefix: false })
   username: Username;

@@ -3,7 +3,6 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Information } from '@modules/organization/core/value/company.information';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
-import { OrganizationRegisteredEvent } from '@modules/organization/core/event/organization.event';
 import { OrganizationRepository } from '@modules/organization/infrastructure/organization.repository';
 import { OrganizationRegisterCommand } from '@modules/organization/core/command/command.event';
 import { OrganizationConcreteBuilder } from '@modules/organization/core/factory/organization.factory';

@@ -5,6 +5,8 @@ import { BootcampModule } from '@modules/bootcamp/bootcamp.module';
 import { PromotionModule } from './modules/promotion/promotion.module';
 import { EmploymentModule } from './modules/employment/employment.module';
 import { DatabaseModule } from '@infrastructure/database/database.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { FeedModule } from './modules/feed/feed.module';
 
 @Module({
   imports: [
@@ -13,10 +15,9 @@ import { DatabaseModule } from '@infrastructure/database/database.module';
       envFilePath: `src/infrastructure/configs/env/.${process.env.NODE_ENV}.env`,
       isGlobal: true,
     }),
-    BootcampModule,
-    PromotionModule,
-    EmploymentModule,
     DatabaseModule,
+    AdminModule,
+    FeedModule,
   ],
   exports: [...domainModules, ConfigModule, BootcampModule, PromotionModule, EmploymentModule, DatabaseModule],
 })

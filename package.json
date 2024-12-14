@@ -90,7 +90,7 @@
     "@types/jest": "27.5.0",
     "@types/node": "^16.0.0",
     "@types/redis": "^4.0.11",
-    "@types/supertest": "^2.0.11",
+    "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",

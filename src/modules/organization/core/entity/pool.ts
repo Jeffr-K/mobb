@@ -1,9 +1,8 @@
-import { Collection, Embedded, Entity, OneToMany, OneToOne, PrimaryKey } from '@mikro-orm/core';
+import { Collection, Embedded, Entity, OneToMany, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Resume } from '@modules/organization/core/entity/resume';
-import { Organization } from '@modules/organization/core/entity/organization';
 
-@Entity({ tableName: 'CompanyTalentPool' })
+@Entity()
 export class Pool {
   @PrimaryKey({ autoincrement: true })
   _id!: number;

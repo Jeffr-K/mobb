@@ -9,6 +9,9 @@ import { AdministraterModule } from './administrater/administrater.module';
 import { FileModule } from './file/file.module';
 import { NotificationModule } from './notification/notification.module';
 import { CommunityModule } from './community/community.module';
+import { BootcampModule } from '@modules/bootcamp/bootcamp.module';
+import { PromotionModule } from '@modules/promotion/promotion.module';
+import { EmploymentModule } from '@modules/employment/employment.module';
 
 export const domainModules = [
   UserModule,
@@ -22,4 +25,7 @@ export const domainModules = [
   FileModule,
   NotificationModule,
   CommunityModule,
+  BootcampModule,
+  PromotionModule,
+  EmploymentModule,
 ];

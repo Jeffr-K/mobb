@@ -1,5 +1,4 @@
 import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
-import { Tag } from '@modules/cave/core/value/tag';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Property } from '@mikro-orm/postgresql';
 import { BootcampRepository } from '@modules/bootcamp/infrastructure/repository/bootcamp.repository';

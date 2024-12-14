@@ -2,7 +2,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetOrganizationQuery, GetOrganizationsQuery } from '@modules/organization/core/query/query.event';
 import { Organization } from '@modules/organization/core/entity/organization';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { NotFoundException } from '@nestjs/common';
 import { OrganizationRepository } from '@modules/organization/infrastructure/organization.repository';
 import { OrganizationNotFoundException } from '@modules/organization/core/exception/exception';
 
