@@ -11,7 +11,10 @@ import { DatabaseObjectNotFoundException, EntityManager } from '@mikro-orm/postg
 import { Inject } from '@nestjs/common';
 import { FeedEventHistory } from '@modules/feed/core/entity/feed.event.history';
 import { FeedNotFoundException, FeedRegistrationFailedException } from '@modules/feed/core/exception/exception';
-import { DatabaseOperationException, InvalidUUIDFormatException } from '@infrastructure/database/postgres/common-exception';
+import {
+  DatabaseOperationException,
+  InvalidUUIDFormatException,
+} from '@infrastructure/database/postgres/common-exception';
 
 @CommandHandler(FeedCreateCommandEvent)
 export class FeedCreateCommandEventHandler implements ICommandHandler<FeedCreateCommandEvent> {

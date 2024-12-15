@@ -48,7 +48,6 @@ export class Feed extends AggregateRoot {
   }
 
   async edit(feed: { title?: string; content?: string; images?: string[] }): Promise<void> {
-    console.log('feed', feed)
     this.title = feed.title;
     this.content = feed.content;
     this.images = feed.images;
