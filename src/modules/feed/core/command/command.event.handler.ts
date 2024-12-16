@@ -1,5 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
+  CommentEditCommandEvent,
+  CommentRegisterCommandEvent, CommentRemoveCommandEvent,
   FeedCreateCommandEvent,
   FeedDeleteCommandEvent,
   FeedEditCommandEvent,
@@ -104,5 +106,26 @@ export class FeedEditCommandEventHandler implements ICommandHandler<FeedEditComm
 
       throw error;
     }
+  }
+}
+
+@CommandHandler(CommentRegisterCommandEvent)
+export class CommentRegisterCommandEventHandler implements ICommandHandler<CommentRegisterCommandEvent> {
+  async execute(command: CommentRegisterCommandEvent): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+}
+
+@CommandHandler(CommentEditCommandEvent)
+export class CommentEditCommandEventHandler implements ICommandHandler<CommentEditCommandEvent> {
+  async execute(command: CommentEditCommandEvent): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+}
+
+@CommandHandler(CommentRemoveCommandEvent)
+export class CommentRemoveCommandEventHandler implements ICommandHandler<CommentRemoveCommandEvent> {
+  async execute(command: CommentRemoveCommandEvent): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 }

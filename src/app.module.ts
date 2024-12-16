@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { domainModules } from './modules';
 import { ConfigModule } from '@nestjs/config';
-import { BootcampModule } from '@modules/bootcamp/bootcamp.module';
-import { PromotionModule } from './modules/promotion/promotion.module';
-import { EmploymentModule } from './modules/employment/employment.module';
 import { DatabaseModule } from '@infrastructure/database/database.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { FeedModule } from './modules/feed/feed.module';
+import { FeedModule } from '@modules/feed/feed.module';
 
 @Module({
   imports: [
@@ -16,9 +12,8 @@ import { FeedModule } from './modules/feed/feed.module';
       isGlobal: true,
     }),
     DatabaseModule,
-    AdminModule,
     FeedModule,
   ],
-  exports: [...domainModules, ConfigModule, BootcampModule, PromotionModule, EmploymentModule, DatabaseModule],
+  exports: [...domainModules, ConfigModule, DatabaseModule],
 })
 export class AppModule {}

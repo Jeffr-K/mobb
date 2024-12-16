@@ -4,6 +4,7 @@ import { BadRequestException, Body, Controller, Delete, Post, UploadedFiles, Use
 import { BucketService } from '@infrastructure/aws/bucket.service';
 import { FilePresignedUrlRegisterAdapter } from '@modules/file/interface/command';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { logger } from '@mikro-orm/nestjs';
 
 @Controller({ path: 'file', version: ['1'] })
 export class FileController {
@@ -23,13 +24,15 @@ export class FileController {
   async upload(@UploadedFiles() files: Express.Multer.File[]) {
     try {
       const uploadedKeys = await this.bucketService.uploadFile(files);
-      return { success: true, keys: uploadedKeys };
+      return {
+        success: true,
+        keys: uploadedKeys,
+      };
     } catch (error) {
-      console.log(error);
+      logger.log(`Error uploading file: ${error.message}`);
       throw new BadRequestException(error.message);
     }
   }
-  // 976-2216
 
   @Delete('/remove')
   async remove() {}

@@ -1,5 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { FeedQueryEvent, FeedsQueryEvent } from '@modules/feed/core/query/query.event';
+import {
+  CommentQueryEvent,
+  CommentsQueryEvent,
+  FeedQueryEvent,
+  FeedsQueryEvent,
+} from '@modules/feed/core/query/query.event';
 import { Feed } from '@modules/feed/core/entity/feed';
 import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.repository';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -24,5 +29,19 @@ export class FeedQueryEventHandler implements IQueryHandler<FeedQueryEvent> {
   constructor(@InjectRepository(Feed) private readonly feedRepository: FeedRepository) {}
   async execute(query: FeedQueryEvent): Promise<Feed> {
     return await this.feedRepository.selectFeedBy({ uuid: query.feedId });
+  }
+}
+
+@QueryHandler(CommentsQueryEvent)
+export class CommentsQueryEventHandler implements IQueryHandler<CommentsQueryEvent> {
+  async execute(query: CommentsQueryEvent): Promise<Comment[]> {
+    throw new Error('Method not implemented.');
+  }
+}
+
+@QueryHandler(CommentQueryEvent)
+export class CommentQueryEventHandler implements IQueryHandler<CommentQueryEvent> {
+  async execute(query: CommentQueryEvent): Promise<Comment> {
+    throw new Error('Method not implemented.');
   }
 }

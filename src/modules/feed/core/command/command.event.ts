@@ -31,3 +31,15 @@ export class FeedEditCommandEvent {
     this.images = event.images ? event.images : null;
   }
 }
+
+export class CommentRegisterCommandEvent {
+  constructor() {}
+}
+
+export class CommentEditCommandEvent {
+  constructor() {}
+}
+
+export class CommentRemoveCommandEvent {
+  constructor() {}
+}

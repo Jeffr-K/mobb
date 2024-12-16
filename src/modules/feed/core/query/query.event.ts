@@ -19,3 +19,11 @@ export class FeedQueryEvent {
     this.feedId = event.feedId;
   }
 }
+
+export class CommentsQueryEvent {
+  constructor() {}
+}
+
+export class CommentQueryEvent {
+  constructor() {}
+}

@@ -22,3 +22,13 @@ export class FeedDeleteParamAdapter {
   @IsNotEmpty()
   feedId: string;
 }
+
+export class CommentsQueryAdapter {}
+
+export class CommentQueryAdapter {}
+
+export class CommentRegisterCommandAdapter {}
+
+export class CommentEditCommandAdapter {}
+
+export class CommentRemoveCommandAdapter {}

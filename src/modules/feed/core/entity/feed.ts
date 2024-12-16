@@ -1,10 +1,12 @@
-import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
+import { Collection, Embedded, Entity, EntityRepositoryType, ManyToOne, OneToMany, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Property } from '@mikro-orm/postgresql';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.repository';
 import { FeedConcreteBuilder } from '@modules/feed/core/factory/feed.factory';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { Comment } from '@modules/feed/core/entity/comment';
+import { User } from '@modules/user/core/entity/user';
 
 @Entity({ repository: () => FeedRepository })
 export class Feed extends AggregateRoot {
@@ -25,14 +27,14 @@ export class Feed extends AggregateRoot {
   @Property()
   images: string[];
 
-  // @ManyToOne(() => Member, { fieldName: 'writer_id' })
-  // writer: Member;
-
-  // @ManyToOne(() => Organization, { fieldName: 'organization_id' })
-  // organization: Organization;
-
   @Embedded(() => Timestamp, { prefix: false })
   timestamp: Timestamp;
+
+  @ManyToOne()
+  writer!: User;
+
+  @OneToMany(() => Comment, comment => comment.feed, { orphanRemoval: true })
+  comments = new Collection<Comment>(this);
 
   constructor() {
     super();
