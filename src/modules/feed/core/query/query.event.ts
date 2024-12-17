@@ -21,9 +21,23 @@ export class FeedQueryEvent {
 }
 
 export class CommentsQueryEvent {
-  constructor() {}
+  readonly feedId: string;
+  readonly page: number;
+  readonly limit: number;
+  readonly orderBy: any;
+
+  constructor(data: { feedId: string; page: number; limit: number; orderBy: string }) {
+    this.feedId = data.feedId;
+    this.page = data.page;
+    this.limit = data.limit;
+    this.orderBy = data.orderBy;
+  }
 }
 
 export class CommentQueryEvent {
-  constructor() {}
+  readonly commentId: string;
+
+  constructor(data: { commentId: string }) {
+    this.commentId = data.commentId;
+  }
 }

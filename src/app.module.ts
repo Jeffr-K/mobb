@@ -3,6 +3,7 @@ import { domainModules } from './modules';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@infrastructure/database/database.module';
 import { FeedModule } from '@modules/feed/feed.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FeedModule } from '@modules/feed/feed.module';
     }),
     DatabaseModule,
     FeedModule,
+    EventEmitterModule.forRoot(),
   ],
   exports: [...domainModules, ConfigModule, DatabaseModule],
 })

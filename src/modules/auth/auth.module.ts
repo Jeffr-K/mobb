@@ -16,7 +16,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from 'src/infrastructure/database/redis/redis.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { AuthGuard } from './infrastructure/guard/token.guard';
 import { JwtAuthGuard } from './infrastructure/guard/jwt.guard';
 import { JwtStrategy } from './infrastructure/stargegy/jwt.strategy';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -52,7 +51,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
     TokenGenerator,
     TokenValidator,
     SecureSessionCacheRepository,
-    AuthGuard,
     ConfigService,
     JwtAuthGuard,
     {
@@ -64,6 +62,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
     },
   ],
   controllers: [AuthController, OAuthController],
-  exports: [AuthGuard],
+  exports: [JwtAuthGuard],
 })
 export class AuthModule {}

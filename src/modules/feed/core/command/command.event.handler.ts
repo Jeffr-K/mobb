@@ -1,7 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   CommentEditCommandEvent,
-  CommentRegisterCommandEvent, CommentRemoveCommandEvent,
+  CommentRegisterCommandEvent,
+  CommentRemoveCommandEvent,
   FeedCreateCommandEvent,
   FeedDeleteCommandEvent,
   FeedEditCommandEvent,
@@ -10,13 +11,15 @@ import { InjectRepository, logger } from '@mikro-orm/nestjs';
 import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.repository';
 import { Feed } from '@modules/feed/core/entity/feed';
 import { DatabaseObjectNotFoundException, EntityManager } from '@mikro-orm/postgresql';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { FeedEventHistory } from '@modules/feed/core/entity/feed.event.history';
 import { FeedNotFoundException, FeedRegistrationFailedException } from '@modules/feed/core/exception/exception';
 import {
   DatabaseOperationException,
   InvalidUUIDFormatException,
 } from '@infrastructure/database/postgres/common-exception';
+import { CommentRepository } from '@modules/feed/infrastructure/repository/comment.repository';
+import { Comment } from '@modules/feed/core/entity/comment';
 
 @CommandHandler(FeedCreateCommandEvent)
 export class FeedCreateCommandEventHandler implements ICommandHandler<FeedCreateCommandEvent> {
@@ -111,21 +114,79 @@ export class FeedEditCommandEventHandler implements ICommandHandler<FeedEditComm
 
 @CommandHandler(CommentRegisterCommandEvent)
 export class CommentRegisterCommandEventHandler implements ICommandHandler<CommentRegisterCommandEvent> {
-  async execute(command: CommentRegisterCommandEvent): Promise<any> {
-    throw new Error('Method not implemented.');
+  constructor(
+    private readonly feedRepository: FeedRepository,
+    private readonly commentRepository: CommentRepository,
+    private readonly entityManager: EntityManager,
+  ) {}
+
+  async execute(command: CommentRegisterCommandEvent): Promise<Comment> {
+    const feed = await this.feedRepository.selectFeedBy({ uuid: command.feedId });
+    if (!feed) {
+      throw new NotFoundException('Feed not found');
+    }
+
+    let comment: Comment;
+
+    if (command.parentCommentId) {
+      const parent = await this.commentRepository.selectCommentBy({ uuid: command.parentCommentId });
+      if (!parent) {
+        throw new NotFoundException('Parent comment not found');
+      }
+      comment = await parent.addReply({
+        feed: feed,
+        writer: command.writer,
+        content: command.content,
+      });
+    } else {
+      comment = await Comment.addComment({
+        feed: feed,
+        writer: command.writer,
+        content: command.content,
+      });
+    }
+
+    await this.entityManager.persistAndFlush(comment);
+    return comment;
   }
 }
 
 @CommandHandler(CommentEditCommandEvent)
 export class CommentEditCommandEventHandler implements ICommandHandler<CommentEditCommandEvent> {
-  async execute(command: CommentEditCommandEvent): Promise<any> {
-    throw new Error('Method not implemented.');
+  constructor(private readonly commentRepository: CommentRepository, private readonly entityManager: EntityManager) {}
+
+  async execute(command: CommentEditCommandEvent): Promise<Comment> {
+    const comment = await this.commentRepository.selectCommentBy({ uuid: command.commentId });
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (comment.writer.identifier.uuid !== command.writerId) {
+      throw new UnauthorizedException('Not authorized to edit this comment');
+    }
+
+    await comment.editComment({ content: command.content });
+    await this.entityManager.flush();
+
+    return comment;
   }
 }
 
 @CommandHandler(CommentRemoveCommandEvent)
 export class CommentRemoveCommandEventHandler implements ICommandHandler<CommentRemoveCommandEvent> {
+  constructor(private readonly commentRepository: CommentRepository, private readonly entityManager: EntityManager) {}
+
   async execute(command: CommentRemoveCommandEvent): Promise<void> {
-    throw new Error('Method not implemented.');
+    const comment = await this.commentRepository.selectCommentBy({ uuid: command.commentUuid });
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (comment.writer.identifier.uuid !== command.writerUuid) {
+      throw new UnauthorizedException('Not authorized to delete this comment');
+    }
+
+    await comment.deleteComment();
+    await this.entityManager.flush();
   }
 }

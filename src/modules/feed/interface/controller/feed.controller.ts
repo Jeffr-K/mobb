@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Feed } from '@modules/feed/core/entity/feed';
 import { FeedCreateAdapter, FeedDeleteParamAdapter, FeedEditAdapter } from '@modules/feed/interface/adapter/adapter';
@@ -9,14 +9,28 @@ import {
 } from '@modules/feed/core/command/command.event';
 import { FeedQueryEvent, FeedsQueryEvent } from '@modules/feed/core/query/query.event';
 import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
+import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
+import { Roles } from '@modules/auth/infrastructure/decorators/roles.decorator';
+import { Role } from '@modules/user/core/value/enum/role';
+import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
+import { User } from '@modules/user/core/entity/user';
 
 @Controller({ path: 'feed', version: ['1'] })
 export class FeedController {
   constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
 
   @Post('/')
-  async createFeed(@Body() adapter: FeedCreateAdapter): Promise<void> {
-    await this.commandBus.execute(new FeedCreateCommandEvent({ ...adapter }));
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  async createFeed(@Secured() user: User, @Body() adapter: FeedCreateAdapter): Promise<void> {
+    await this.commandBus.execute(
+      new FeedCreateCommandEvent({
+        title: adapter.title,
+        content: adapter.content,
+        images: adapter.images,
+        user: user,
+      }),
+    );
   }
 
   @Delete('/:feedId')

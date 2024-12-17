@@ -9,6 +9,9 @@ import { Feed } from '@modules/feed/core/entity/feed';
 import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.repository';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
+import { CommentRepository } from '@modules/feed/infrastructure/repository/comment.repository';
+import { Comment } from '@modules/feed/core/entity/comment';
+import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(FeedsQueryEvent)
 export class FeedsQueryEventHandler implements IQueryHandler<FeedsQueryEvent> {
@@ -27,21 +30,38 @@ export class FeedsQueryEventHandler implements IQueryHandler<FeedsQueryEvent> {
 @QueryHandler(FeedQueryEvent)
 export class FeedQueryEventHandler implements IQueryHandler<FeedQueryEvent> {
   constructor(@InjectRepository(Feed) private readonly feedRepository: FeedRepository) {}
+
   async execute(query: FeedQueryEvent): Promise<Feed> {
-    return await this.feedRepository.selectFeedBy({ uuid: query.feedId });
+    const feed = await this.feedRepository.selectFeedBy({ uuid: query.feedId });
+
+    if (!feed) {
+      throw new NotFoundException('Feed not found');
+    }
+
+    return feed;
   }
 }
 
 @QueryHandler(CommentsQueryEvent)
 export class CommentsQueryEventHandler implements IQueryHandler<CommentsQueryEvent> {
+  constructor(private readonly commentRepository: CommentRepository) {}
+
   async execute(query: CommentsQueryEvent): Promise<Comment[]> {
-    throw new Error('Method not implemented.');
+    return await this.commentRepository.selectCommentsBy({ feedId: query.feedId });
   }
 }
 
 @QueryHandler(CommentQueryEvent)
 export class CommentQueryEventHandler implements IQueryHandler<CommentQueryEvent> {
+  constructor(private readonly commentRepository: CommentRepository) {}
+
   async execute(query: CommentQueryEvent): Promise<Comment> {
-    throw new Error('Method not implemented.');
+    const comment = await this.commentRepository.selectCommentBy({ uuid: query.commentId });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    return comment;
   }
 }

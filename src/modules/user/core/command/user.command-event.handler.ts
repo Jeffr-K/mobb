@@ -12,7 +12,7 @@ import { Email } from '@modules/user/core/value/embeddable/email';
 export class UserRegisterCommandEventHandler implements ICommandHandler<UserRegisterCommand> {
   constructor(
     private readonly publisher: EventPublisher,
-    @InjectRepository(User) private userRepository: UserRepository,
+    @InjectRepository(User) private readonly userRepository: UserRepository,
     private readonly encrypter: Encrypter,
   ) {}
 
@@ -42,7 +42,7 @@ export class UserRegisterCommandEventHandler implements ICommandHandler<UserRegi
 export class UserDropdownCommandEventHandler implements ICommandHandler<UserDropdownCommand> {
   constructor(
     private readonly publisher: EventPublisher,
-    @InjectRepository(User) private userRepository: UserRepository,
+    @InjectRepository(User) private readonly userRepository: UserRepository,
   ) {}
 
   async execute(command: UserDropdownCommand): Promise<void> {
@@ -53,6 +53,7 @@ export class UserDropdownCommandEventHandler implements ICommandHandler<UserDrop
     ]);
 
     if (!user) throw new UserNotFoundException();
+
     const [publishedUser] = await Promise.all([this.publisher.mergeObjectContext(user)]);
 
     await publishedUser.dropdown({ user: publishedUser });

@@ -16,10 +16,10 @@ export class Bookmark {
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
 
-  @ManyToOne()
+  @ManyToOne(() => User)
   user: User;
 
-  @ManyToOne()
+  @ManyToOne(() => Feed)
   feed: Feed;
 
   @Embedded({ prefix: false })

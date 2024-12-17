@@ -34,6 +34,6 @@ export class FileController {
     }
   }
 
-  @Delete('/remove')
-  async remove() {}
+  // @Delete('/remove')
+  // async remove() {}
 }

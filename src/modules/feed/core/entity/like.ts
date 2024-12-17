@@ -2,8 +2,8 @@ import { Embedded, Entity, EntityRepositoryType, ManyToOne, PrimaryKey } from '@
 import { LikeRepository } from '@modules/feed/infrastructure/repository/like.repository';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Feed } from '@modules/feed/core/entity/feed';
-import { User } from '@sentry/nestjs';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
+import { User } from '@modules/user/core/entity/user';
 
 @Entity({ repository: () => LikeRepository })
 export class Like {
@@ -15,10 +15,10 @@ export class Like {
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
 
-  @ManyToOne()
+  @ManyToOne(() => User)
   user: User;
 
-  @ManyToOne()
+  @ManyToOne(() => Feed)
   feed: Feed;
 
   @Embedded({ prefix: false })

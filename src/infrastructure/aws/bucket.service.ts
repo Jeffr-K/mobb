@@ -1,23 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { ConfigService } from '@nestjs/config';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class BucketService {
-  private readonly s3: AWS.S3;
-
-  constructor(@Inject('S3_CLIENT') private readonly s3Client: S3Client, private readonly configService: ConfigService) {
-    AWS.config.update({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
-    this.s3 = new AWS.S3();
-  }
+  constructor(
+    @Inject('S3_CLIENT') private readonly s3Client: S3Client,
+    private readonly configService: ConfigService,
+  ) {}
 
   async getPresignedUrl(options: { fileOwner: string; fileUsage: string; fileFormat: string }): Promise<string> {
     const filename = `${options.fileOwner}-${options.fileUsage}-${Date.now()}.${options.fileFormat}`;

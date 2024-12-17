@@ -1,5 +1,5 @@
 import { Agreements } from '../../../core/value/embeddable/agreements';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsObject, IsString } from 'class-validator';
 
 export class UserRegisterCommandAdapter {
   @IsEmail()
@@ -18,7 +18,7 @@ export class UserRegisterCommandAdapter {
   @IsNotEmpty()
   public password: string;
 
-  @IsString()
+  @IsObject()
   @IsNotEmpty()
   public agreements: Agreements;
 }

@@ -1,4 +1,4 @@
-import { Collection, Embedded, Entity, EntityRepositoryType, Enum, ManyToMany, OneToMany, PrimaryKey } from '@mikro-orm/core';
+import { Collection, Embedded, Entity, EntityRepositoryType, Enum, OneToMany, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { UserRepository } from '@modules/user/infrastructure/repository/user.repository';
 import { UserDropdownCommand, UserRegisterCommand } from '@modules/user/core/command/user.command.event';
@@ -49,10 +49,10 @@ export class User extends AggregateRoot {
   @Embedded(() => Timestamp, { prefix: false })
   timestamp: Timestamp;
 
-  @OneToMany({ entity: () => Feed, mappedBy: feed => feed.writer, lazy: true, orphanRemoval: true })
+  @OneToMany({ entity: () => Feed, mappedBy: feed => feed.writer, lazy: true, orphanRemoval: true, hidden: true })
   feeds = new Collection<Feed>(this);
 
-  @OneToMany({ entity: () => Comment, mappedBy: comment => comment.writer, lazy: true, orphanRemoval: true })
+  @OneToMany({ entity: () => Comment, mappedBy: comment => comment.writer, lazy: true, orphanRemoval: true, hidden: true })
   comments = new Collection<Comment>(this);
 
   @OneToMany({ entity: () => Bookmark, mappedBy: bookmark => bookmark.user, lazy: true, orphanRemoval: true })

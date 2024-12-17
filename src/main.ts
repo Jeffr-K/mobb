@@ -1,39 +1,58 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { VersioningType } from '@nestjs/common';
-import { winstonLogger } from './infrastructure/log/winston';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { winstonLogger } from '@infrastructure/log/winston';
 import helmet from 'helmet';
 import { MikroORM } from '@mikro-orm/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import compression from 'compression';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  try {
+    const app = await NestFactory.create(AppModule, {
+      logger: winstonLogger,
+      cors: true,
+    });
 
-  const config = new DocumentBuilder()
-    .setTitle('Persona API Documentation')
-    .setDescription('Persona API Documentation')
-    .setVersion('0.1')
-    .build();
+    const config = new DocumentBuilder()
+      .setTitle('Persona API Documentation')
+      .setDescription('Persona API Documentation')
+      .setVersion('0.1')
+      .addBearerAuth()
+      .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api-docs', app, documentFactory);
 
-  const logger = winstonLogger;
+    app.setGlobalPrefix('api');
+    app.enableVersioning({
+      type: VersioningType.URI,
+    });
 
-  app.setGlobalPrefix('api');
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
 
-  app.useLogger(logger);
+    app.use(helmet());
+    app.use(compression());
 
-  app.use(helmet());
+    const orm = app.get(MikroORM);
+    await orm.getSchemaGenerator().ensureDatabase();
+    await orm.getSchemaGenerator().updateSchema();
 
-  app.enableCors();
+    const port = process.env.PORT || 5050;
+    await app.listen(port);
 
-  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
-  await app.get(MikroORM).getSchemaGenerator().updateSchema();
-
-  await app.listen(5050);
+    console.log(`🚀 Server running on port ${port}`);
+    console.log(`📄 API Docs: http://localhost:${port}/api-docs`);
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
 }
+
 bootstrap();

@@ -28,10 +28,11 @@ import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { UseSearchModelSerializer } from '@modules/user/interface/adapter/out/user.serializer';
 import { UserSearchQuery, UsersSearchQuery } from '@modules/user/core/query/user.query.event';
 import { User } from '@modules/user/core/entity/user';
+import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
 
 @Controller({ path: 'user', version: ['1'] })
 export class UserController {
-  constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
+  constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
   @Post('/')
   async register(@Body() adapter: UserRegisterCommandAdapter): Promise<void> {
@@ -80,16 +81,15 @@ export class UserController {
   @Get('/')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
-  async user(@Query('id') id: number): Promise<UseSearchModelSerializer> {
-    const user = await this.queryBus.execute(new UserSearchQuery(id));
-
-    return new UseSearchModelSerializer(user);
+  async user(@Secured() user: User): Promise<UseSearchModelSerializer> {
+    return new UseSearchModelSerializer(await this.queryBus.execute(new UserSearchQuery(user._id)));
   }
 
   @Get('/list')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   async users(
+    @Secured() user: User,
     @Query('page', ParseIntPipe) page: number,
     @Query('offset', ParseIntPipe) offset: number,
     @Query('limit', ParseIntPipe) limit: number,
