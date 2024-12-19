@@ -29,7 +29,7 @@ export class Feed extends AggregateRoot {
   @Embedded(() => Timestamp, { prefix: false })
   timestamp: Timestamp;
 
-  @ManyToOne(() => User, { serializer: user => user?._id })
+  @ManyToOne(() => User, { serializer: (user) => user?._id, hidden: true })
   writer!: User;
 
   constructor() {

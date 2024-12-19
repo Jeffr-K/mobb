@@ -17,11 +17,13 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
       entities: [
         path.resolve(process.cwd(), 'dist/modules/*/**/core/entity/*.js'),
         path.resolve(process.cwd(), 'dist/modules/*/**/core/value/*.js'),
+        path.resolve(process.cwd(), 'dist/modules/*/**/core/value/embeddable/*.js'),
         path.resolve(process.cwd(), 'dist/infrastructure/utils/structure/*.js'),
       ],
       entitiesTs: [
         path.resolve(process.cwd(), 'src/modules/*/**/core/entity/*.ts'),
         path.resolve(process.cwd(), 'src/modules/*/**/core/value/*.ts'),
+        path.resolve(process.cwd(), 'dist/modules/*/**/core/value/embeddable/*.js'),
         path.resolve(process.cwd(), 'dist/infrastructure/utils/structure/*.ts'),
       ],
       discovery: {

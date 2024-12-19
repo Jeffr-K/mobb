@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, ValidationPipe } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CommentEditCommandAdapter,
@@ -17,6 +17,7 @@ import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorato
 import { User } from '@modules/user/core/entity/user';
 import { Role } from '@modules/user/core/value/enum/role';
 import { Comment } from '@modules/feed/core/entity/comment';
+import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
 
 @Controller({ path: 'comment', version: ['1'] })
 export class CommentController {
@@ -52,15 +53,15 @@ export class CommentController {
     await this.commandBus.execute(new CommentRemoveCommandEvent(commentUuid, adapter.writerUuid));
   }
 
-  @Get('/feed/:feedId')
+  @Get('/list')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getComments(
-    @Param('feedId') feedId: string,
-    @Query('page') page: number,
-    @Query('limit') limit: number,
+    @Query('feedId') feedId: string,
+    @Query('page', new ValidationPipe()) page = 1,
+    @Query('limit', new ValidationPipe()) limit = 10,
     @Query('orderBy') orderBy: string,
-  ): Promise<Comment[]> {
+  ): Promise<PaginatedResponse<Comment>> {
     return await this.queryBus.execute(new CommentsQueryEvent({ feedId, page, limit, orderBy }));
   }
 

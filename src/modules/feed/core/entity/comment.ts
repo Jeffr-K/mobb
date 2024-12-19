@@ -26,16 +26,16 @@ export class Comment {
   @ManyToOne(() => Comment, { nullable: true, hidden: true })
   parent?: Comment;
 
-  @OneToMany(() => Comment, comment => comment.parent, { lazy: true, hidden: true })
+  @OneToMany(() => Comment, (comment) => comment.parent, { lazy: true, hidden: true })
   replies = new Collection<Comment>(this);
 
   @Embedded({ prefix: false })
   timestamp: Timestamp;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { hidden: true })
   writer!: User;
 
-  @ManyToOne(() => Feed)
+  @ManyToOne(() => Feed, { hidden: true })
   feed!: Feed;
 
   static async addComment(data: { feed: Feed; writer: User; content: string }): Promise<Comment> {

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { FeedController } from '@modules/feed/interface/controller/feed.controller';
 import {
-  CommentEditCommandEventHandler, CommentRegisterCommandEventHandler, CommentRemoveCommandEventHandler,
+  CommentEditCommandEventHandler,
+  CommentRegisterCommandEventHandler,
+  CommentRemoveCommandEventHandler,
   FeedCreateCommandEventHandler,
   FeedDeleteCommandEventHandler,
   FeedEditCommandEventHandler,

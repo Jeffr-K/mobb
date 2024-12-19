@@ -28,13 +28,11 @@ export class UsersSearchQueryEventHandler implements IQueryHandler<UsersSearchQu
   constructor(@InjectRepository(User) private userRepository: UserRepository) {}
 
   async execute(query: UsersSearchQuery): Promise<User[]> {
-    const user = await this.userRepository.selectUsersBy({
+    return await this.userRepository.selectUsersBy({
       page: query.page,
       offset: query.offset,
       limit: query.limit,
     });
-
-    return user;
   }
 }
 

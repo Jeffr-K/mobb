@@ -22,10 +22,21 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { ActivityRepository } from './infrastructure/repository/activity.repository';
 import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { JwtService } from '@nestjs/jwt';
+import { ProfileController } from '@modules/user/interface/controller/profile.controller';
+import { Experience } from '@modules/user/core/entity/experience';
+import { Activity } from '@modules/user/core/entity/activity';
+import { Profile } from '@modules/user/core/entity/profile';
+import { Garage } from '@modules/user/core/entity/garage';
+import { ProfileRegisterCommandHandler } from '@modules/user/core/command/profile.command-event.handler';
 
 @Module({
-  imports: [CqrsModule, RDBMSModule, AuthModule, MikroOrmModule.forFeature([User])],
-  controllers: [UserController],
+  imports: [
+    CqrsModule,
+    RDBMSModule,
+    AuthModule,
+    MikroOrmModule.forFeature([User, Profile, Activity, Experience, Garage]),
+  ],
+  controllers: [UserController, ProfileController],
   providers: [
     JwtAuthGuard,
     JwtService,
@@ -39,6 +50,7 @@ import { JwtService } from '@nestjs/jwt';
     UserRegisteredEventHandler,
     UserDroppedOutEventHandler,
     IsUserExistQueryHandler,
+    ProfileRegisterCommandHandler,
     {
       provide: UserRepository,
       useFactory: (em: EntityManager) => {

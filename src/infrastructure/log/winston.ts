@@ -48,7 +48,7 @@ export const winstonLogger = WinstonModule.createLogger({
   format: winston.format.combine(
     appendTimestamp({ tz: 'Asia/Seoul' }),
     winston.format.json(),
-    winston.format.printf(info => {
+    winston.format.printf((info) => {
       return `${info.timestamp} - ${info.level} [${process.pid}]: ${info.message}`;
     }),
   ),

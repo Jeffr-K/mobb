@@ -4,9 +4,9 @@ import { Profile } from '../../core/entity/profile';
 import { ProfileSearchQuery, ProfilesSearchQuery } from '../../core/query/profile.query.event';
 import { ProfileEditCommandAdapter } from '../adapter/in/profile.command.adapter';
 
-@Controller('profile')
+@Controller({ path: 'profile', version: ['1'] })
 export class ProfileController {
-  constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
+  constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
   @Put()
   async editProfile(@Body() adapter: ProfileEditCommandAdapter): Promise<void> {

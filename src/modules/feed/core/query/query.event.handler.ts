@@ -46,8 +46,12 @@ export class FeedQueryEventHandler implements IQueryHandler<FeedQueryEvent> {
 export class CommentsQueryEventHandler implements IQueryHandler<CommentsQueryEvent> {
   constructor(private readonly commentRepository: CommentRepository) {}
 
-  async execute(query: CommentsQueryEvent): Promise<Comment[]> {
-    return await this.commentRepository.selectCommentsBy({ feedId: query.feedId });
+  async execute(query: CommentsQueryEvent): Promise<PaginatedResponse<Comment>> {
+    return await this.commentRepository.selectCommentsBy({
+      feedId: query.feedId,
+      page: query.page,
+      limit: query.limit,
+    });
   }
 }
 

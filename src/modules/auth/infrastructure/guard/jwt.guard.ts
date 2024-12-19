@@ -5,6 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserLookupEvent } from '@modules/user/core/event/handler/event/user.query.event';
+import { Role } from '@modules/user/core/value/enum/role';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -29,7 +30,7 @@ export class JwtAuthGuard implements CanActivate {
 
     const user = await this.eventEmitter
       .emitAsync('user.lookup', new UserLookupEvent(payload.userId))
-      .then(results => results[0]);
+      .then((results) => results[0]);
 
     if (!user) {
       throw new UnauthorizedException('찾는 유저가 없습니다; 잘못된 토큰 입니다.');
@@ -40,7 +41,11 @@ export class JwtAuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    if (!requiredRoles.some(role => user.role?.includes(role))) {
+    if (!requiredRoles) {
+      return !!(request['user'] = user);
+    }
+
+    if (!requiredRoles.some((role) => user.role?.includes(role))) {
       throw new ForbiddenException('올바른 권한이 아닙니다.');
     }
 

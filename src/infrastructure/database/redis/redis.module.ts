@@ -12,7 +12,7 @@ import { RedisCacheRepository } from './redis.repository';
           port: 6379,
           password: 'root',
           onClientCreated(client) {
-            client.on('error', err => {
+            client.on('error', (err) => {
               console.log(`[ERROR] Redis 연결 과정 중 에러가 발생했습니다. ${err}`);
             });
             client.on('ready', () => {

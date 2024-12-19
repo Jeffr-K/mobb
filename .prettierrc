@@ -3,10 +3,13 @@
   "singleQuote": true,
   "trailingComma": "all",
   "bracketSpacing": true,
-  "arrowParens": "avoid",
+  "arrowParens": "always",
   "endOfLine": "auto",
   "semi": true,
   "bracketSameLine": true,
   "singleAttributePerLine": false,
-  "functionParentheses": false
+  "functionParentheses": false,
+  "arrowSpacing": ["error", { "before": true, "after": true }],
+  "useTabs": false,
+  "tabWidth": 2
 }

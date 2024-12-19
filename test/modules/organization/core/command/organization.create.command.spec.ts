@@ -29,7 +29,7 @@ describe('조직(organization) 생성 usecase', () => {
         {
           provide: EntityManager,
           useValue: {
-            transactional: jest.fn().mockImplementation(async cb => {
+            transactional: jest.fn().mockImplementation(async (cb) => {
               const mockManager = {
                 rollback: jest.fn(),
                 commit: jest.fn(),

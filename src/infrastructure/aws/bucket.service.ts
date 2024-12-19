@@ -23,7 +23,7 @@ export class BucketService {
 
   async uploadFile(files: Express.Multer.File[]): Promise<string[]> {
     try {
-      const uploadPromises = files.map(file => this.uploadSingleFile(file));
+      const uploadPromises = files.map((file) => this.uploadSingleFile(file));
       return await Promise.all(uploadPromises);
     } catch (error) {
       throw new Error(`File upload failed: ${error.message}`);

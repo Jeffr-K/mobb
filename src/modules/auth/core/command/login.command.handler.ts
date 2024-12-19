@@ -9,6 +9,7 @@ import { SecureSession } from '../entity/secure.session';
 import { UserLogoutCommand } from './logout.command.event';
 import { IsUserExistQueryEvent } from '../event/auth.domain.event';
 import { IsNotCaveMemberException } from '../exception/auth.domain.exception';
+import { LoginSuccessResponse } from '@modules/auth/interface/adapter/out/response';
 
 @CommandHandler(UserLoginCommand)
 export class LoginCommandEventHandler implements ICommandHandler<UserLoginCommand> {
@@ -19,7 +20,7 @@ export class LoginCommandEventHandler implements ICommandHandler<UserLoginComman
     private readonly queryBus: QueryBus,
   ) {}
 
-  async execute(command: UserLoginCommand): Promise<{ accessToken: string; refreshToken: string }> {
+  async execute(command: UserLoginCommand): Promise<LoginSuccessResponse> {
     const isValidateUser: boolean = await this.queryBus.execute(
       new IsUserExistQueryEvent(command.email, command.password),
     );
@@ -49,7 +50,7 @@ export class LoginCommandEventHandler implements ICommandHandler<UserLoginComman
 
     await this.secureSessionRepository.persist(secureSession);
 
-    return tokens;
+    return new LoginSuccessResponse(tokens.accessToken, tokens.refreshToken);
   }
 }
 

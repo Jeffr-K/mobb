@@ -14,9 +14,9 @@ export class Share {
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { hidden: true })
   user: User;
 
-  @ManyToOne(() => Feed)
+  @ManyToOne(() => Feed, { hidden: true })
   feed: Feed;
 }
