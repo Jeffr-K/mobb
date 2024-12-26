@@ -1,8 +1,10 @@
 import { AggregateRootIdentifier } from 'src/infrastructure/utils/structure/aggregate-root-id';
 import { Profile } from '../entity/profile';
-import { Timestamp } from '@infrastructure/database/postgres/timestamp'
+import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import day from 'dayjs';
 import { User } from '@modules/user/core/entity/user';
+import { Persona } from '@modules/user/core/value/embeddable/persona';
+import { Skill } from '@modules/user/core/value/embeddable/skill';
 
 export interface ProfileBuilder {
   build(): Profile;
@@ -14,6 +16,29 @@ export class ProfileConcreteBuilder implements ProfileBuilder {
   constructor() {
     this.profile = new Profile();
     this.profile.identifier = new AggregateRootIdentifier();
+  }
+
+  setPersona(): this {
+    this.profile.persona = new Persona({
+      cave: 'default',
+      personal: 'default',
+      identity: 'default',
+      interests: ['default'],
+      location: 'default',
+      description: 'default',
+      summary: 'default',
+    });
+
+    return this;
+  }
+
+  setSkill(): this {
+    this.profile.skill = new Skill({
+      techSkills: [],
+      usableTools: [],
+    });
+
+    return this;
   }
 
   setUser(user: User): this {

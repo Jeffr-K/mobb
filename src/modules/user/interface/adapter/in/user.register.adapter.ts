@@ -24,6 +24,8 @@ export class UserRegisterCommandAdapter {
 }
 
 export class UserDropdownCommandAdapter {
+  @IsEmail()
+  @IsNotEmpty()
   public email: string;
 }
 

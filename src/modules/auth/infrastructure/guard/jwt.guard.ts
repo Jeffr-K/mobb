@@ -42,7 +42,8 @@ export class JwtAuthGuard implements CanActivate {
     ]);
 
     if (!requiredRoles) {
-      return !!(request['user'] = user);
+      request['user'] = user;
+      return true;
     }
 
     if (!requiredRoles.some((role) => user.role?.includes(role))) {

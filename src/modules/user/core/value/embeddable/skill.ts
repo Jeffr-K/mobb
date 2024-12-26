@@ -25,4 +25,15 @@ export class Skill {
 
   @Property({ type: 'json', nullable: true })
   usableTools?: Tool[];
+
+  constructor(data: { techSkills: Stack[]; usableTools: Tool[] }) {
+    this.techSkills = data.techSkills;
+    this.usableTools = data.usableTools;
+  }
+
+  async edit(data: { techSkills: Stack[]; usableTools: Tool[] }): Promise<Skill> {
+    this.techSkills = data.techSkills;
+    this.usableTools = data.usableTools;
+    return this;
+  }
 }

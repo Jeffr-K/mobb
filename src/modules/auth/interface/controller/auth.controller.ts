@@ -3,17 +3,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UserLogoutCommand } from '../../core/command/logout.command.event';
 import { UserLoginCommand } from '../../core/command/login.command.event';
 import { UserLoginCommandAdapter, UserLogoutCommandAdapter } from '../adapter/command';
-import { BaseResponse, BusinessResponse } from '@infrastructure/utils/base/base-response';
-import { LoginSuccessResponse } from '@modules/auth/interface/adapter/out/response';
+import { BusinessResponse } from '@infrastructure/utils/base/base-response';
 
 @Controller({ path: 'auth', version: ['1'] })
 export class AuthController {
   constructor(private commandBus: CommandBus) {}
-
-  // @Post('/login')
-  // async login(@Body() adapter: UserLoginCommandAdapter): Promise<{ accessToken: string; refreshToken: string }> {
-  //   return await this.commandBus.execute(new UserLoginCommand(adapter.email, adapter.password));
-  // }
 
   @Post('/login')
   async login(

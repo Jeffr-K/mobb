@@ -23,7 +23,7 @@ export class Persona {
   @Property()
   summary: string;
 
-  constructor(data: {
+  constructor(persona: {
     cave: string;
     personal: string;
     identity: string;
@@ -32,12 +32,34 @@ export class Persona {
     description: string;
     summary: string;
   }) {
-    this.cave = data.cave;
-    this.personal = data.personal;
-    this.identity = data.identity;
-    this.interests = data.interests;
-    this.location = data.location;
-    this.description = data.description;
-    this.summary = data.summary;
+    this.cave = persona.cave;
+    this.personal = persona.personal;
+    this.identity = persona.identity;
+    this.interests = persona.interests;
+    this.location = persona.location;
+    this.description = persona.description;
+    this.summary = persona.summary;
+  }
+
+  async edit(persona: {
+    cave: string;
+    personal: string;
+    identity: string;
+    interests: string[];
+    location: string;
+    description: string;
+    summary: string;
+  }): Promise<Persona> {
+    // TODO: validation logic 추가
+    this.cave = persona.cave;
+    this.personal = persona.personal;
+    this.identity = persona.identity;
+    this.interests = persona.interests;
+    this.location = persona.location;
+    this.description = persona.description;
+    this.summary = persona.summary;
+
+    console.log('persona', this);
+    return this;
   }
 }

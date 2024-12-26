@@ -4,6 +4,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IsUserExistQueryEvent } from '../../core/event/auth.domain.event';
+import { UserNotFoundException } from '@modules/user/core/exception/user.domain-exception';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,15 +17,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: Payload) {
-    const isValidateUser: boolean = await this.queryBus.execute(new IsUserExistQueryEvent(payload.email));
+    try {
+      await this.queryBus.execute(new IsUserExistQueryEvent(payload.email));
 
-    if (!isValidateUser) {
-      throw new UnauthorizedException({ message: '회원이 존재하지 않습니다.' });
+      return {
+        email: payload.email,
+      };
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new UnauthorizedException({ message: '회원이 존재하지 않습니다.' });
+      }
     }
-
-    return {
-      email: payload.email,
-    };
   }
 }
 

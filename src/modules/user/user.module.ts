@@ -1,5 +1,5 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { User } from './core/entity/user';
 import { UserRepository } from './infrastructure/repository/user.repository';
@@ -13,10 +13,13 @@ import {
   UserDropdownCommandEventHandler,
   UserRegisterCommandEventHandler,
 } from './core/command/user.command-event.handler';
-import { UserSearchQueryEventHandler, UsersSearchQueryEventHandler } from './core/query/user.query-event.handler';
+import {
+  IsUserExistQueryHandler,
+  UserSearchQueryEventHandler,
+  UsersSearchQueryEventHandler,
+} from './core/query/user.query-event.handler';
 import { Encrypter } from './infrastructure/utils/encrypter';
 import { AuthModule } from '../auth/auth.module';
-import { IsUserExistQueryHandler } from './core/query/user.query-event.handler';
 import { RDBMSModule } from '@infrastructure/database/postgres/rdbms.module';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { ActivityRepository } from './infrastructure/repository/activity.repository';
@@ -27,14 +30,30 @@ import { Experience } from '@modules/user/core/entity/experience';
 import { Activity } from '@modules/user/core/entity/activity';
 import { Profile } from '@modules/user/core/entity/profile';
 import { Garage } from '@modules/user/core/entity/garage';
-import { ProfileRegisterCommandHandler } from '@modules/user/core/command/profile.command-event.handler';
+import {
+  ProfileExperienceCommandEventHandler,
+  ProfilePersonaEditCommandEventHandler,
+  ProfileRegisterCommandHandler,
+  ProfileSkillRegisterCommandEventHandler,
+} from '@modules/user/core/command/profile.command-event.handler';
+import { ProfileRepository } from '@modules/user/infrastructure/repository/profile.repository';
+import {
+  ProfileActivityQueryEventHandler,
+  ProfileEducationQueryEventHandler,
+  ProfileExperienceQueryEventHandler,
+  ProfileQueryEventHandler,
+  ProfilesQueryEventHandler,
+} from '@modules/user/core/query/profile.query-event.handler';
+import { EducationRepository } from '@modules/user/infrastructure/repository/education.repository';
+import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
+import { Education } from '@modules/user/core/entity/education';
 
 @Module({
   imports: [
     CqrsModule,
     RDBMSModule,
-    AuthModule,
-    MikroOrmModule.forFeature([User, Profile, Activity, Experience, Garage]),
+    forwardRef(() => AuthModule),
+    MikroOrmModule.forFeature([User, Profile, Activity, Experience, Garage, Education]),
   ],
   controllers: [UserController, ProfileController],
   providers: [
@@ -46,11 +65,22 @@ import { ProfileRegisterCommandHandler } from '@modules/user/core/command/profil
     UserDropdownCommandEventHandler,
     UserSearchQueryEventHandler,
     UsersSearchQueryEventHandler,
+    ProfileSkillRegisterCommandEventHandler,
+    ProfileQueryEventHandler,
+    ProfilesQueryEventHandler,
+    ProfileExperienceCommandEventHandler,
     ActivityRepository,
+    EducationRepository,
+    ExperienceRepository,
+    ProfileRepository,
+    IsUserExistQueryHandler,
     UserRegisteredEventHandler,
     UserDroppedOutEventHandler,
-    IsUserExistQueryHandler,
     ProfileRegisterCommandHandler,
+    ProfilePersonaEditCommandEventHandler,
+    ProfileActivityQueryEventHandler,
+    ProfileEducationQueryEventHandler,
+    ProfileExperienceQueryEventHandler,
     {
       provide: UserRepository,
       useFactory: (em: EntityManager) => {
@@ -59,5 +89,6 @@ import { ProfileRegisterCommandHandler } from '@modules/user/core/command/profil
       inject: [EntityManager],
     },
   ],
+  exports: [UserRepository, IsUserExistQueryHandler],
 })
 export class UserModule {}

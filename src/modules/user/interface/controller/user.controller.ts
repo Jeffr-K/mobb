@@ -82,7 +82,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   async user(@Secured() user: User): Promise<UseSearchModelSerializer> {
-    return new UseSearchModelSerializer(await this.queryBus.execute(new UserSearchQuery(user._id)));
+    const result = await this.queryBus.execute(new UserSearchQuery(user._id));
+    return new UseSearchModelSerializer(result);
   }
 
   @Get('/list')

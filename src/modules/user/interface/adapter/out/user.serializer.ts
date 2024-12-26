@@ -3,50 +3,36 @@ import { User } from '../../../core/entity/user';
 
 export class UseSearchModelSerializer {
   @Expose()
-  _id: number;
+  _id!: number;
 
   @Expose()
-  @Transform(({ obj }) => obj.identifier.uuid)
-  uuid: string;
+  @Transform(({ value, obj }) => obj.identifier?.uuid)
+  uuid!: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.identifier.version)
-  version: number;
+  @Transform(({ value, obj }) => obj.username?.username)
+  username!: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.username.username)
-  username: string | null;
+  @Transform(({ value, obj }) => obj.username?.nickname)
+  nickname!: string | null;
 
   @Expose()
-  @Transform(({ obj }) => obj.username.nickname)
-  nickname: string | null;
+  @Transform(({ value, obj }) => obj.email?.email)
+  email!: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.email.email)
-  email: string;
+  @Transform(({ value, obj }) => obj.timestamp?.createdAt)
+  createdAt!: Date;
 
   @Expose()
-  @Transform(({ obj }) => obj.timestamp.createdAt)
-  createdAt: Date;
-
-  @Expose()
-  @Transform(({ obj }) => obj.timestamp.updatedAt)
-  updatedAt: Date | null;
-
-  @Expose()
-  @Transform(({ obj }) => obj.timestamp.deletedAt)
-  deletedAt: Date | null;
+  @Transform(({ value, obj }) => obj.timestamp?.updatedAt)
+  updatedAt!: Date | null;
 
   @Exclude()
-  timestamp: any;
+  profile!: any;
 
-  @Exclude()
-  identifier: any;
-
-  @Exclude()
-  password: any;
-
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
+  constructor(user: User) {
+    Object.assign(this, user);
   }
 }

@@ -1,18 +1,73 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { ProfileSearchQuery, ProfilesSearchQuery } from './profile.query.event';
-
-@QueryHandler(ProfileSearchQuery)
-export class ProfileQueryEventHandler implements IQueryHandler<ProfileSearchQuery> {
-  execute(query: ProfileSearchQuery): Promise<any> {
-    console.log(query);
-    throw new Error('Method not implemented.');
-  }
-}
+import {
+  ProfileActivitiesSearchQuery,
+  ProfileEducationsSearchQuery,
+  ProfileExperiencesSearchQuery,
+  ProfileSearchQuery,
+  ProfilesSearchQuery,
+} from './profile.query.event';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { ProfileRepository } from '@modules/user/infrastructure/repository/profile.repository';
+import { Profile } from '@modules/user/core/entity/profile';
+import { Education } from '@modules/user/core/entity/education';
+import { EducationRepository } from '@modules/user/infrastructure/repository/education.repository';
+import { Activity } from '@modules/user/core/entity/activity';
+import { ActivityRepository } from '@modules/user/infrastructure/repository/activity.repository';
+import { Experience } from '@modules/user/core/entity/experience';
+import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
 
 @QueryHandler(ProfilesSearchQuery)
 export class ProfilesQueryEventHandler implements IQueryHandler<ProfilesSearchQuery> {
   execute(query: ProfilesSearchQuery): Promise<any> {
     console.log(query);
     throw new Error('Method not implemented.');
+  }
+}
+
+@QueryHandler(ProfileSearchQuery)
+export class ProfileQueryEventHandler implements IQueryHandler<ProfileSearchQuery> {
+  constructor(@InjectRepository(Profile) private readonly profileRepository: ProfileRepository) {}
+
+  async execute(query: ProfileSearchQuery): Promise<Profile> {
+    return await this.profileRepository.selectProfileBy({ userId: query.userId });
+  }
+}
+
+@QueryHandler(ProfileExperiencesSearchQuery)
+export class ProfileExperienceQueryEventHandler implements IQueryHandler<ProfileExperiencesSearchQuery> {
+  constructor(
+    @InjectRepository(Profile) private readonly profileRepository: ProfileRepository,
+    @InjectRepository(Experience) private readonly experienceRepository: ExperienceRepository,
+  ) {}
+
+  async execute(query: ProfileExperiencesSearchQuery): Promise<any> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+    return await this.experienceRepository.selectExperiencesBy({ profileId: profile._id });
+  }
+}
+
+@QueryHandler(ProfileEducationsSearchQuery)
+export class ProfileEducationQueryEventHandler implements IQueryHandler<ProfileEducationsSearchQuery> {
+  constructor(
+    @InjectRepository(Profile) private readonly profileRepository: ProfileRepository,
+    @InjectRepository(Education) private readonly educationRepository: EducationRepository,
+  ) {}
+
+  async execute(query: ProfileEducationsSearchQuery): Promise<any> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+    return await this.educationRepository.selectEducationsBy({ profileId: profile._id });
+  }
+}
+
+@QueryHandler(ProfileActivitiesSearchQuery)
+export class ProfileActivityQueryEventHandler implements IQueryHandler<ProfileActivitiesSearchQuery> {
+  constructor(
+    @InjectRepository(Profile) private readonly profileRepository: ProfileRepository,
+    @InjectRepository(Activity) private readonly activityRepository: ActivityRepository,
+  ) {}
+
+  async execute(query: ProfileActivitiesSearchQuery): Promise<any> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+    return await this.activityRepository.selectActivitiesBy({ profileId: profile._id });
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisCacheRepository } from 'src/infrastructure/database/redis/redis.repository';
 import { RedisCacheService } from 'src/infrastructure/database/redis/redis.service';
@@ -21,10 +21,13 @@ import { JwtStrategy } from './infrastructure/stargegy/jwt.strategy';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SecureSession } from '@modules/auth/core/entity/secure.session';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { IsUserExistQueryHandler } from '@modules/user/core/query/user.query-event.handler';
+import { UserModule } from '@modules/user/user.module';
 
 @Module({
   imports: [
     CqrsModule,
+    forwardRef(() => UserModule),
     ConfigModule.forRoot({ envFilePath: 'src/infrastructure/configs/.dev.env' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -46,7 +46,7 @@ export class User extends AggregateRoot {
   @Embedded(() => Timestamp, { prefix: false })
   timestamp: Timestamp;
 
-  @OneToOne(() => Profile, (profile) => profile.user, { owner: true })
+  @OneToOne(() => Profile, (profile) => profile.user, { owner: true, lazy: true })
   profile: Profile;
 
   // @OneToMany({

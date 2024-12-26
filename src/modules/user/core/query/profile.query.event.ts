@@ -1,8 +1,18 @@
-export class ProfileSearchQuery {
-  private readonly id: number;
+import { User } from '@modules/user/core/entity/user';
 
-  constructor(data: { id: number }) {
-    this.id = data.id;
+export type ProfileSearchOptions = {
+  withExperience?: boolean;
+  withEducation?: boolean;
+  withActivity?: boolean;
+};
+
+export class ProfileSearchQuery {
+  readonly userId: number;
+  readonly options?: ProfileSearchOptions;
+
+  constructor(data: { userId: number; options?: ProfileSearchOptions }) {
+    this.userId = data.userId;
+    this.options = data.options;
   }
 }
 
@@ -15,5 +25,29 @@ export class ProfilesSearchQuery {
     this.page = data.page;
     this.offset = data.offset;
     this.limit = data.limit;
+  }
+}
+
+export class ProfileExperiencesSearchQuery {
+  readonly user: User;
+
+  constructor(data: { user: User }) {
+    this.user = data.user;
+  }
+}
+
+export class ProfileEducationsSearchQuery {
+  readonly user: User;
+
+  constructor(data: { user: User }) {
+    this.user = data.user;
+  }
+}
+
+export class ProfileActivitiesSearchQuery {
+  readonly user: User;
+
+  constructor(data: { user: User }) {
+    this.user = data.user;
   }
 }

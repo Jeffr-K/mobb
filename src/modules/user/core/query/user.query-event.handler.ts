@@ -10,7 +10,7 @@ import { IsNotRightPasswordException } from '../../../auth/core/exception/auth.d
 
 @QueryHandler(UserSearchQuery)
 export class UserSearchQueryEventHandler implements IQueryHandler<UserSearchQuery> {
-  constructor(@InjectRepository(User) private userRepository: UserRepository) {}
+  constructor(@InjectRepository(User) private readonly userRepository: UserRepository) {}
 
   async execute(query: UserSearchQuery): Promise<User> {
     const user = await this.userRepository.selectUserBy({
@@ -42,6 +42,8 @@ export class IsUserExistQueryHandler implements IQueryHandler<IsUserExistQueryEv
 
   async execute(query: IsUserExistQueryEvent): Promise<boolean> {
     const user = await this.userRepository.selectUserBy({ email: query.email });
+
+    if (!user) throw new UserNotFoundException();
 
     if (query.password) {
       const isPasswordValid = await this.encrypter.compare(user.password.password, query.password);

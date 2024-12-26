@@ -5,7 +5,7 @@ import { Persona } from '@modules/user/core/value/embeddable/persona';
 import { Experience } from '@modules/user/core/entity/experience';
 import { Education } from '@modules/user/core/entity/education';
 import { Activity } from '@modules/user/core/entity/activity';
-import { Skill } from '@modules/user/core/value/embeddable/skill';
+import { Skill, Stack, Tool } from '@modules/user/core/value/embeddable/skill';
 import { Garage } from '@modules/user/core/entity/garage';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { User } from '@modules/user/core/entity/user';
@@ -22,8 +22,8 @@ export class Profile extends AggregateRoot {
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
 
-  @Embedded({ prefix: false, nullable: true })
-  persona?: Persona;
+  @Embedded({ prefix: false })
+  persona: Persona;
 
   @Embedded({ prefix: false, nullable: true })
   skill?: Skill;
@@ -51,6 +51,27 @@ export class Profile extends AggregateRoot {
   }
 
   static async register(data: { user: User }): Promise<Profile> {
-    return new ProfileConcreteBuilder().setUser(data.user).setTimestamp().build();
+    return new ProfileConcreteBuilder().setPersona().setSkill().setUser(data.user).setTimestamp().build();
+  }
+
+  async editPersona(data: {
+    cave: string;
+    personal: string;
+    identity: string;
+    interests: string[];
+    location: string;
+    description: string;
+    summary: string;
+  }): Promise<void> {
+    await this.persona.edit({ ...data });
+  }
+
+  async addSkill(data: { techSkills: Stack[]; usableTools: Tool[] }): Promise<Profile> {
+    this.skill = new Skill({ ...data });
+    return this;
+  }
+
+  async editSkill(data: { techSkills: Stack[]; usableTools: Tool[] }): Promise<Skill> {
+    return await this.skill.edit({ ...data });
   }
 }
