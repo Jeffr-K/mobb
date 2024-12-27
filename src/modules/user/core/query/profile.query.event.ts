@@ -51,3 +51,21 @@ export class ProfileActivitiesSearchQuery {
     this.user = data.user;
   }
 }
+
+export class ProfileGaragesSearchQuery {
+  readonly user: User;
+
+  constructor(data: { user: User }) {
+    this.user = data.user;
+  }
+}
+
+export class ProfileGarageSearchQuery {
+  readonly user: User;
+  readonly garageId: number;
+
+  constructor(data: { user: User; garageId: number }) {
+    this.user = data.user;
+    this.garageId = data.garageId;
+  }
+}

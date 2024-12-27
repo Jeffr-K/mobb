@@ -21,6 +21,7 @@ export class ActivityConcreteBuilder implements ActivityBuilder {
   }
 
   setTitle(title: string): this {
+    console.log('title ==========================================', title);
     this.activity.title = title;
     return this;
   }

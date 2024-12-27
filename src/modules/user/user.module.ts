@@ -31,7 +31,9 @@ import { Activity } from '@modules/user/core/entity/activity';
 import { Profile } from '@modules/user/core/entity/profile';
 import { Garage } from '@modules/user/core/entity/garage';
 import {
+  ProfileActivityCommandEventHandler,
   ProfileExperienceCommandEventHandler,
+  ProfileGarageCommandEventHandler,
   ProfilePersonaEditCommandEventHandler,
   ProfileRegisterCommandHandler,
   ProfileSkillRegisterCommandEventHandler,
@@ -41,6 +43,8 @@ import {
   ProfileActivityQueryEventHandler,
   ProfileEducationQueryEventHandler,
   ProfileExperienceQueryEventHandler,
+  ProfileGarageQueryEventHandler,
+  ProfileGaragesQueryEventHandler,
   ProfileQueryEventHandler,
   ProfilesQueryEventHandler,
 } from '@modules/user/core/query/profile.query-event.handler';
@@ -81,6 +85,10 @@ import { Education } from '@modules/user/core/entity/education';
     ProfileActivityQueryEventHandler,
     ProfileEducationQueryEventHandler,
     ProfileExperienceQueryEventHandler,
+    ProfileActivityCommandEventHandler,
+    ProfileGarageCommandEventHandler,
+    ProfileGarageQueryEventHandler,
+    ProfileGaragesQueryEventHandler,
     {
       provide: UserRepository,
       useFactory: (em: EntityManager) => {

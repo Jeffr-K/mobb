@@ -77,6 +77,7 @@ export class ProfileActivityCommandEventHandler implements ICommandHandler<Profi
 
   async execute(command: ProfileActivityRegisterCommand): Promise<void> {
     const profile = await this.profileRepository.selectProfileBy({ userId: command.user._id });
+    console.log('command =============', command);
     const activity = await Activity.register({
       profile: profile,
       title: command.title,
@@ -87,6 +88,7 @@ export class ProfileActivityCommandEventHandler implements ICommandHandler<Profi
       location: command.location,
       isPublic: command.isPublic,
     });
+    console.log('activity', activity);
 
     await this.entityManager.persistAndFlush(activity);
   }
@@ -258,7 +260,7 @@ export class ProfileGarageEditCommandEventHandler implements ICommandHandler<Pro
 
   async execute(command: ProfileGarageEditCommand): Promise<void> {
     const profile = await this.profileRepository.selectProfileBy({ userId: command.user._id });
-    const garage = await this.garageRepository.selectGarageBy({ profileId: profile._id });
+    const garage = await this.garageRepository.selectGarageBy({ profileId: profile._id, garageId: command.garageId });
     await garage.edit({
       title: command.title,
       description: command.description,
@@ -283,7 +285,7 @@ export class ProfileGarageRemoveCommandEventHandler implements ICommandHandler<P
 
   async execute(command: ProfileGarageRemoveCommand): Promise<void> {
     const profile = await this.profileRepository.selectProfileBy({ userId: command.user._id });
-    const garage = await this.garageRepository.selectGarageBy({ profileId: profile._id });
+    const garage = await this.garageRepository.selectGarageBy({ profileId: profile._id, garageId: command.garageId });
 
     await this.entityManager.removeAndFlush(garage);
   }

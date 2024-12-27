@@ -3,6 +3,8 @@ import {
   ProfileActivitiesSearchQuery,
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
+  ProfileGarageSearchQuery,
+  ProfileGaragesSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
 } from './profile.query.event';
@@ -15,6 +17,8 @@ import { Activity } from '@modules/user/core/entity/activity';
 import { ActivityRepository } from '@modules/user/infrastructure/repository/activity.repository';
 import { Experience } from '@modules/user/core/entity/experience';
 import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
+import { Garage } from '@modules/user/core/entity/garage';
+import { GarageRepository } from '@modules/user/infrastructure/repository/garage.repository';
 
 @QueryHandler(ProfilesSearchQuery)
 export class ProfilesQueryEventHandler implements IQueryHandler<ProfilesSearchQuery> {
@@ -69,5 +73,31 @@ export class ProfileActivityQueryEventHandler implements IQueryHandler<ProfileAc
   async execute(query: ProfileActivitiesSearchQuery): Promise<any> {
     const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
     return await this.activityRepository.selectActivitiesBy({ profileId: profile._id });
+  }
+}
+
+@QueryHandler(ProfileGaragesSearchQuery)
+export class ProfileGaragesQueryEventHandler implements IQueryHandler<ProfileGaragesSearchQuery> {
+  constructor(
+    @InjectRepository(Profile) private readonly profileRepository: ProfileRepository,
+    @InjectRepository(Garage) private readonly garageRepository: GarageRepository,
+  ) {}
+
+  async execute(query: ProfileGaragesSearchQuery): Promise<Garage[]> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+    return await this.garageRepository.selectGaragesBy({ profileId: profile._id });
+  }
+}
+
+@QueryHandler(ProfileGarageSearchQuery)
+export class ProfileGarageQueryEventHandler implements IQueryHandler<ProfileGarageSearchQuery> {
+  constructor(
+    @InjectRepository(Profile) private readonly profileRepository: ProfileRepository,
+    @InjectRepository(Garage) private readonly garageRepository: GarageRepository,
+  ) {}
+
+  async execute(query: ProfileGarageSearchQuery): Promise<Garage> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+    return await this.garageRepository.selectGarageBy({ profileId: profile._id, garageId: query.garageId });
   }
 }

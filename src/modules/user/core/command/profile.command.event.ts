@@ -206,6 +206,7 @@ export class ProfileGarageEditCommand {
   readonly location: string;
   readonly isPublic: boolean;
   readonly user: User;
+  readonly garageId: number;
 
   constructor(data: {
     title: string;
@@ -216,6 +217,7 @@ export class ProfileGarageEditCommand {
     location: string;
     isPublic: boolean;
     user: User;
+    garageId: number;
   }) {
     this.title = data.title;
     this.description = data.description;
@@ -225,9 +227,16 @@ export class ProfileGarageEditCommand {
     this.location = data.location;
     this.isPublic = data.isPublic;
     this.user = data.user;
+    this.garageId = data.garageId;
   }
 }
 
 export class ProfileGarageRemoveCommand {
   readonly user: User;
+  readonly garageId: number;
+
+  constructor(data: { user: User; garageId: number }) {
+    this.user = data.user;
+    this.garageId = data.garageId;
+  }
 }

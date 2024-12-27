@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Profile } from '../../core/entity/profile';
 import {
   ProfileActivitiesSearchQuery,
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
+  ProfileGarageSearchQuery,
+  ProfileGaragesSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
 } from '../../core/query/profile.query.event';
@@ -35,6 +37,7 @@ import { Experience } from '@modules/user/core/entity/experience';
 import { Education } from '@modules/user/core/entity/education';
 import { Activity } from '@modules/user/core/entity/activity';
 import { BusinessResponse } from '@infrastructure/utils/base/base-response';
+import { Garage } from '@modules/user/core/entity/garage';
 
 @Controller({ path: 'profile', version: ['1'] })
 export class ProfileController {
@@ -55,7 +58,9 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfile(@Secured() user: User): Promise<BusinessResponse<Profile>> {
-    const profile = await this.queryBus.execute(new ProfileSearchQuery({ userId: user._id, options: { withExperience: true } }));
+    const profile = await this.queryBus.execute(
+      new ProfileSearchQuery({ userId: user._id, options: { withExperience: true } }),
+    );
     return new BusinessResponse<Profile>(profile, '프로필 조회 성공', HttpStatus.OK);
   }
 
@@ -145,21 +150,58 @@ export class ProfileController {
   @Get('/activities')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
-  async getProfileActivities(@Secured() user: User): Promise<Activity[]> {
-    return await this.queryBus.execute(new ProfileActivitiesSearchQuery({ user: user }));
+  async getProfileActivities(@Secured() user: User): Promise<BusinessResponse<Activity[]>> {
+    const activities = await this.queryBus.execute(new ProfileActivitiesSearchQuery({ user: user }));
+    return new BusinessResponse<Activity[]>(activities, '활동 조회 성공', HttpStatus.OK);
   }
 
   @Post('/activity')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
-  async registerProfileActivity(@Secured() user: User, adapter: ProfileActivityRegisterCommandAdapter): Promise<void> {
+  async registerProfileActivity(
+    @Secured() user: User,
+    @Body() adapter: ProfileActivityRegisterCommandAdapter,
+  ): Promise<void> {
     await this.commandBus.execute(new ProfileActivityRegisterCommand({ ...adapter, user: user }));
   }
 
-  @Put()
+  @Post('/garage')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
-  async editProfileGarage(@Secured() user: User, @Body() adapter: ProfileGarageRegisterCommandAdapter): Promise<void> {
+  async registerProfileGarage(
+    @Secured() user: User,
+    @Body() adapter: ProfileGarageRegisterCommandAdapter,
+  ): Promise<void> {
     return await this.commandBus.execute(new ProfileGarageRegisterCommand({ ...adapter, user: user }));
+  }
+
+  // @Put('/garage')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(Role.USER, Role.ADMIN)
+  // async editProfileGarage(@Secured() user: User, @Body() adapter: ProfileGarageEditCommandAdapter): Promise<void> {
+  //   return await this.commandBus.execute(new ProfileGarageEditCommand({ ...adapter, user: user }));
+  // }
+  //
+  // @Delete('/garage')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(Role.USER, Role.ADMIN)
+  // async deleteProfileGarage(@Secured() user: User): Promise<void> {
+  //   return await this.commandBus.execute(new ProfileGarageDeleteCommand({ user: user }));
+  // }
+  //
+  @Get('/garages')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  async getProfileGarages(@Secured() user: User): Promise<BusinessResponse<Garage[]>> {
+    const garages = await this.queryBus.execute(new ProfileGaragesSearchQuery({ user: user }));
+    return new BusinessResponse<Garage[]>(garages, '차고 조회 성공', HttpStatus.OK);
+  }
+
+  @Get('/garage')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  async getProfileGarage(@Secured() user: User, @Query('garageId') garageId: number): Promise<BusinessResponse<Garage>> {
+    const garage = await this.queryBus.execute(new ProfileGarageSearchQuery({ user: user, garageId: garageId }));
+    return new BusinessResponse<Garage>(garage, '차고 조회 성공', HttpStatus.OK);
   }
 }

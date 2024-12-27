@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Stack, Tool } from '@modules/user/core/value/embeddable/skill';
 
@@ -168,7 +168,7 @@ export class ProfileActivityRegisterCommandAdapter {
   @IsNotEmpty()
   location: string;
 
-  @IsString()
+  @IsBoolean()
   @IsNotEmpty()
   isPublic: boolean;
 }
@@ -182,7 +182,7 @@ export class ProfileGarageRegisterCommandAdapter {
   @IsNotEmpty()
   description: string;
 
-  @IsString()
+  @IsArray()
   @IsNotEmpty()
   period: string[];
 
@@ -198,7 +198,7 @@ export class ProfileGarageRegisterCommandAdapter {
   @IsNotEmpty()
   location: string;
 
-  @IsString()
+  @IsBoolean()
   @IsNotEmpty()
   isPublic: boolean;
 }
