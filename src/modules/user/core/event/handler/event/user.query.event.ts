@@ -3,5 +3,11 @@ export interface GetUserByEmailQuery {
 }
 
 export class UserLookupEvent {
-  constructor(readonly userId: number) {}
+  readonly email?: string;
+  readonly userId?: number;
+
+  constructor(data: { userId?: number; email?: string }) {
+    this.userId = data.userId;
+    this.email = data.email;
+  }
 }

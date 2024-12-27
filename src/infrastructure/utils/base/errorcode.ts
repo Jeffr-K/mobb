@@ -1,0 +1,4 @@
+export enum ServerErrorCode {
+  JWT_TOKEN_EXPIRED = 'JWT_TOKEN_EXPIRED',
+  SESSION_EXPIRED = 'SESSION_EXPIRED',
+}

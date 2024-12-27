@@ -29,7 +29,23 @@ export class UserEventHandler {
 
   @OnEvent('user.lookup')
   async handleUserLookup(event: UserLookupEvent): Promise<User> {
-    const user = await this.userRepository.selectUserBy({ userId: event.userId });
+    let filters = {};
+
+    if (event.userId) {
+      filters = {
+        ...filters,
+        userId: event.userId,
+      };
+    }
+
+    if (event.email) {
+      filters = {
+        ...filters,
+        email: event.email,
+      };
+    }
+
+    const user = await this.userRepository.selectUserBy({ ...filters });
 
     if (!user) throw new NotFoundException('User not found');
 

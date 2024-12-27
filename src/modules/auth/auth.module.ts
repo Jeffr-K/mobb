@@ -21,8 +21,11 @@ import { JwtStrategy } from './infrastructure/stargegy/jwt.strategy';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SecureSession } from '@modules/auth/core/entity/secure.session';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { IsUserExistQueryHandler } from '@modules/user/core/query/user.query-event.handler';
 import { UserModule } from '@modules/user/user.module';
+import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
+import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
+import { TokenCommandHandler } from '@modules/auth/core/command/token.command.handler';
+import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
 
 @Module({
   imports: [
@@ -45,16 +48,20 @@ import { UserModule } from '@modules/user/user.module';
     MikroOrmModule.forFeature([SecureSession]),
   ],
   providers: [
-    JwtStrategy,
+    TokenCommandHandler,
     RedisCacheService,
     RedisCacheRepository,
+    SecureSessionCacheRepository,
+    JwtStrategy,
     LoginCommandEventHandler,
     LogoutCommandEventHandler,
     TokenService,
     TokenGenerator,
     TokenValidator,
-    SecureSessionCacheRepository,
     ConfigService,
+    TokenGuard,
+    RolesGuard,
+    SessionValidationGuard,
     JwtAuthGuard,
     {
       provide: SecureSessionRepository,
@@ -65,6 +72,12 @@ import { UserModule } from '@modules/user/user.module';
     },
   ],
   controllers: [AuthController, OAuthController],
-  exports: [JwtAuthGuard],
+  exports: [
+    JwtAuthGuard,
+    TokenGuard,
+    RolesGuard,
+    SecureSessionCacheRepository,
+    SessionValidationGuard,
+  ],
 })
 export class AuthModule {}

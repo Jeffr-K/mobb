@@ -56,14 +56,10 @@ export class LoginCommandEventHandler implements ICommandHandler<UserLoginComman
 
 @CommandHandler(UserLogoutCommand)
 export class LogoutCommandEventHandler implements ICommandHandler<UserLogoutCommand> {
-  constructor(
-    private readonly secureSessionRepository: SecureSessionRepository,
-    private readonly secureSessionCacheRepository: SecureSessionCacheRepository,
-  ) {}
+  constructor(private readonly secureSessionCacheRepository: SecureSessionCacheRepository) {}
 
   async execute(command: UserLogoutCommand): Promise<boolean> {
     await this.secureSessionCacheRepository.destroyToken({ key: command.email });
-    await this.secureSessionRepository.removeSecureSession({ email: command.email });
     return true;
   }
 }

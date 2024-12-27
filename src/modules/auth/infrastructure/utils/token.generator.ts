@@ -4,7 +4,7 @@ import { Payload } from '../../core/value/payload';
 
 @Injectable()
 export class TokenGenerator {
-  constructor(private jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   async generate(claims: Payload): Promise<{ accessToken: string; refreshToken: string }> {
     const accessToken = this.jwtService.sign({ email: claims.email }, { secret: 'C@ve!#15', expiresIn: '1h' });

@@ -29,4 +29,14 @@ export class SecureSessionRepository extends ExtendedEntityRepository<SecureSess
   async removeSecureSession(data: { email: string }): Promise<void> {
     await this.createQueryBuilder().delete().where({ email: data.email }).execute();
   }
+
+  async updateToken(data: { email: string; accessToken: string; refreshToken: string }): Promise<void> {
+    await this.createQueryBuilder()
+      .update({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      })
+      .where({ email: data.email })
+      .execute();
+  }
 }

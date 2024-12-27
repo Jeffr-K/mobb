@@ -5,7 +5,6 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserLookupEvent } from '@modules/user/core/event/handler/event/user.query.event';
-import { Role } from '@modules/user/core/value/enum/role';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -29,7 +28,7 @@ export class JwtAuthGuard implements CanActivate {
     });
 
     const user = await this.eventEmitter
-      .emitAsync('user.lookup', new UserLookupEvent(payload.userId))
+      .emitAsync('user.lookup', new UserLookupEvent({ userId: payload.userId }))
       .then((results) => results[0]);
 
     if (!user) {

@@ -51,6 +51,8 @@ import {
 import { EducationRepository } from '@modules/user/infrastructure/repository/education.repository';
 import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
 import { Education } from '@modules/user/core/entity/education';
+import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
+import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 
 @Module({
   imports: [
@@ -62,6 +64,8 @@ import { Education } from '@modules/user/core/entity/education';
   controllers: [UserController, ProfileController],
   providers: [
     JwtAuthGuard,
+    TokenGuard, // TODO: 변경 예정
+    RolesGuard, // TODO: 변경 예정
     JwtService,
     UserEventHandler,
     Encrypter,

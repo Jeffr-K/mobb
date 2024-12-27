@@ -38,6 +38,9 @@ import { Education } from '@modules/user/core/entity/education';
 import { Activity } from '@modules/user/core/entity/activity';
 import { BusinessResponse } from '@infrastructure/utils/base/base-response';
 import { Garage } from '@modules/user/core/entity/garage';
+import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
+import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
+import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
 
 @Controller({ path: 'profile', version: ['1'] })
 export class ProfileController {
@@ -148,7 +151,7 @@ export class ProfileController {
   }
 
   @Get('/activities')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfileActivities(@Secured() user: User): Promise<BusinessResponse<Activity[]>> {
     const activities = await this.queryBus.execute(new ProfileActivitiesSearchQuery({ user: user }));
@@ -200,7 +203,10 @@ export class ProfileController {
   @Get('/garage')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
-  async getProfileGarage(@Secured() user: User, @Query('garageId') garageId: number): Promise<BusinessResponse<Garage>> {
+  async getProfileGarage(
+    @Secured() user: User,
+    @Query('garageId') garageId: number,
+  ): Promise<BusinessResponse<Garage>> {
     const garage = await this.queryBus.execute(new ProfileGarageSearchQuery({ user: user, garageId: garageId }));
     return new BusinessResponse<Garage>(garage, '차고 조회 성공', HttpStatus.OK);
   }
