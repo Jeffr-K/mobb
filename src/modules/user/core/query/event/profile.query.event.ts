@@ -28,6 +28,14 @@ export class ProfilesSearchQuery {
   }
 }
 
+export class ProfilePersonaSearchQuery {
+  readonly user: User;
+
+  constructor(data: { user: User }) {
+    this.user = data.user;
+  }
+}
+
 export class ProfileExperiencesSearchQuery {
   readonly user: User;
 

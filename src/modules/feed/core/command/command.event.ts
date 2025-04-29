@@ -1,12 +1,13 @@
 import { User } from '@modules/user/core/entity/user';
+import { FeedImage } from '@modules/feed/interface/adapter/adapter';
 
 export class FeedCreateCommandEvent {
   readonly title: string;
   readonly content: string;
-  readonly images: string[];
+  readonly images: FeedImage[];
   readonly user: User;
 
-  constructor(event: { title: string; content: string; images: string[]; user: User }) {
+  constructor(event: { title: string; content: string; images: FeedImage[]; user: User }) {
     this.content = event.content;
     this.title = event.title;
     this.images = event.images;
@@ -26,9 +27,9 @@ export class FeedEditCommandEvent {
   readonly feedId: string;
   readonly title: string;
   readonly content?: string;
-  readonly images?: string[];
+  readonly images?: FeedImage[];
 
-  constructor(event: { feedId: string; title: string; content?: string; images?: string[] }) {
+  constructor(event: { feedId: string; title: string; content?: string; images?: FeedImage[] }) {
     this.feedId = event.feedId;
     this.content = event.content ? event.content : null;
     this.title = event.title;

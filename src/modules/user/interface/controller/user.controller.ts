@@ -26,7 +26,7 @@ import {
 } from '@modules/user/core/command/user.command.event';
 import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { UseSearchModelSerializer } from '@modules/user/interface/adapter/out/user.serializer';
-import { UserSearchQuery, UsersSearchQuery } from '@modules/user/core/query/user.query.event';
+import { UserSearchQuery, UsersSearchQuery } from '@modules/user/core/query/event/user.query.event';
 import { User } from '@modules/user/core/entity/user';
 import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
 

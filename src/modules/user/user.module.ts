@@ -17,7 +17,7 @@ import {
   IsUserExistQueryHandler,
   UserSearchQueryEventHandler,
   UsersSearchQueryEventHandler,
-} from './core/query/user.query-event.handler';
+} from './core/query/event/user.query-event.handler';
 import { Encrypter } from './infrastructure/utils/encrypter';
 import { AuthModule } from '../auth/auth.module';
 import { RDBMSModule } from '@infrastructure/database/postgres/rdbms.module';
@@ -47,7 +47,7 @@ import {
   ProfileGaragesQueryEventHandler,
   ProfileQueryEventHandler,
   ProfilesQueryEventHandler,
-} from '@modules/user/core/query/profile.query-event.handler';
+} from '@modules/user/core/query/event/profile.query-event.handler';
 import { EducationRepository } from '@modules/user/infrastructure/repository/education.repository';
 import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
 import { Education } from '@modules/user/core/entity/education';

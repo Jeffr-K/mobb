@@ -1,6 +1,6 @@
 import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
-import { EmploymentRepository } from '@modules/employment/infrastructure/repository/employment.repository';
+import { EmploymentRepository } from '@modules/apply/infrastructure/repository/employment.repository';
 
 @Entity({ repository: () => EmploymentRepository })
 export class Employment {

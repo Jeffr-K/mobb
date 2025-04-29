@@ -2,6 +2,7 @@ import { Feed } from '@modules/feed/core/entity/feed';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { User } from '@modules/user/core/entity/user';
+import { FeedImage } from '@modules/feed/interface/adapter/adapter';
 
 export interface FeedConcreteBuilder {
   build(): Feed;
@@ -29,7 +30,7 @@ export class FeedConcreteBuilder implements FeedConcreteBuilder {
     return this;
   }
 
-  setImages(images: string[]): this {
+  setImages(images: FeedImage[]): this {
     this.feed.images = images;
     return this;
   }

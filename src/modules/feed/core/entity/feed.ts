@@ -6,6 +6,7 @@ import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.rep
 import { FeedConcreteBuilder } from '@modules/feed/core/factory/feed.factory';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { User } from '@modules/user/core/entity/user';
+import { FeedImage } from '@modules/feed/interface/adapter/adapter';
 
 @Entity({ repository: () => FeedRepository })
 export class Feed extends AggregateRoot {
@@ -24,19 +25,24 @@ export class Feed extends AggregateRoot {
   content: string;
 
   @Property()
-  images: string[];
+  images: FeedImage[];
 
   @Embedded(() => Timestamp, { prefix: false })
   timestamp: Timestamp;
 
-  @ManyToOne(() => User, { serializer: (user) => user?._id, hidden: true })
+  @ManyToOne(() => User, {
+    serializer: (user: User) => {
+      return { _id: user?._id, name: user?.username, email: user?.email };
+    },
+    hidden: false,
+  })
   writer!: User;
 
   constructor() {
     super();
   }
 
-  static async register(feed: { title: string; content: string; images: string[]; user: User }): Promise<Feed> {
+  static async register(feed: { title: string; content: string; images: FeedImage[]; user: User }): Promise<Feed> {
     return new FeedConcreteBuilder()
       .setTitle(feed.title)
       .setContent(feed.content)
@@ -46,7 +52,7 @@ export class Feed extends AggregateRoot {
       .build();
   }
 
-  async edit(feed: { title?: string; content?: string; images?: string[] }): Promise<void> {
+  async edit(feed: { title?: string; content?: string; images?: FeedImage[] }): Promise<void> {
     this.title = feed.title;
     this.content = feed.content;
     this.images = feed.images;

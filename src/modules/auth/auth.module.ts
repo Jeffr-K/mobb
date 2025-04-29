@@ -72,12 +72,6 @@ import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/sessi
     },
   ],
   controllers: [AuthController, OAuthController],
-  exports: [
-    JwtAuthGuard,
-    TokenGuard,
-    RolesGuard,
-    SecureSessionCacheRepository,
-    SessionValidationGuard,
-  ],
+  exports: [JwtAuthGuard, TokenGuard, RolesGuard, SecureSessionCacheRepository, SessionValidationGuard],
 })
 export class AuthModule {}

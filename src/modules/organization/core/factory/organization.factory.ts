@@ -1,5 +1,5 @@
 import { Organization } from '@modules/organization/core/entity/organization';
-import { Information } from '@modules/organization/core/value/company.information';
+import { Information } from '@modules/organization/core/value/embeddable/company.information';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 

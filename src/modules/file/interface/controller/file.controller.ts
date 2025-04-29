@@ -1,8 +1,8 @@
 // https://joojae.com/nestjs-large-file-upload-with-presigned-url-and-s3-multipart-upload/
 
-import { BadRequestException, Body, Controller, Delete, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { BucketService } from '@infrastructure/aws/bucket.service';
-import { FilePresignedUrlRegisterAdapter } from '@modules/file/interface/command';
+import { FilePresignedUrlRegisterAdapter } from '@modules/file/interface/adapter/in/file.command.adapter';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { logger } from '@mikro-orm/nestjs';
 

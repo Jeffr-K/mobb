@@ -5,6 +5,9 @@ export class Persona {
   @Property()
   cave: string;
 
+  @Property({ nullable: true })
+  description: string;
+
   @Property()
   personal: string;
 
@@ -14,14 +17,26 @@ export class Persona {
   @Property()
   interests: string[];
 
-  @Property()
+  @Property({ nullable: true })
   location: string;
 
-  @Property()
-  description: string;
+  @Property({ nullable: true })
+  education: string;
+
+  @Property({ nullable: true })
+  experience: string;
 
   @Property()
   summary: string;
+
+  @Property({ nullable: true })
+  github: string;
+
+  @Property({ nullable: true })
+  blog: string;
+
+  @Property({ nullable: true })
+  job: string;
 
   constructor(persona: {
     cave: string;

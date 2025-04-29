@@ -1,19 +1,53 @@
-import { IsArray, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { Sanitized } from '@infrastructure/utils/system/sanitize';
+
+export class FeedImage {
+  @IsString()
+  @IsUrl()
+  url: string;
+
+  @IsInt()
+  @Min(0)
+  order: number;
+}
 
 export class FeedCreateAdapter {
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(20)
   title: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(10)
+  @MaxLength(300)
+  @Sanitized()
   content: string;
 
+  @IsOptional()
   @IsArray()
   @IsNotEmpty()
-  images: string[];
+  @ValidateNested({ each: true })
+  @Type(() => FeedImage)
+  @ArrayMaxSize(10)
+  images: FeedImage[];
 }
 
 export class FeedEditAdapter extends PartialType(FeedCreateAdapter) {}

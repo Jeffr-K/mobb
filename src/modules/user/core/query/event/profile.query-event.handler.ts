@@ -4,7 +4,7 @@ import {
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
   ProfileGarageSearchQuery,
-  ProfileGaragesSearchQuery,
+  ProfileGaragesSearchQuery, ProfilePersonaSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
 } from './profile.query.event';
@@ -19,6 +19,8 @@ import { Experience } from '@modules/user/core/entity/experience';
 import { ExperienceRepository } from '@modules/user/infrastructure/repository/experience.repository';
 import { Garage } from '@modules/user/core/entity/garage';
 import { GarageRepository } from '@modules/user/infrastructure/repository/garage.repository';
+import { ProfilePersonaContractSpecification } from '@modules/user/interface/specs/profile.specification';
+import { ProfilePersonaOutboundPort } from '@modules/user/core/query/port/profile-persona.port';
 
 @QueryHandler(ProfilesSearchQuery)
 export class ProfilesQueryEventHandler implements IQueryHandler<ProfilesSearchQuery> {
@@ -34,6 +36,40 @@ export class ProfileQueryEventHandler implements IQueryHandler<ProfileSearchQuer
 
   async execute(query: ProfileSearchQuery): Promise<Profile> {
     return await this.profileRepository.selectProfileBy({ userId: query.userId });
+  }
+}
+
+@QueryHandler(ProfilePersonaSearchQuery)
+export class ProfilePersonaSearchQueryEventHandler implements IQueryHandler<ProfilePersonaSearchQuery> {
+  constructor(@InjectRepository(Profile) private readonly profileRepository: ProfileRepository) {}
+
+  async execute(query: ProfilePersonaSearchQuery): Promise<ProfilePersonaOutboundPort> {
+    const profile = await this.profileRepository.selectProfileBy({ userId: query.user._id });
+
+    return {
+      contact: {
+        email: query.user.email.value,
+        github: profile.persona.github,
+        blog: profile.persona.blog,
+      },
+      personal: {
+        name: query.user.username.Username,
+        description: profile.persona.description,
+        job: profile.persona.job,
+        personality: profile.persona.personal,
+        interests: profile.persona.interests,
+      },
+      // identity: {
+      //   // frontend: query.user.frontend,
+      //   // backend: query.user.backend,
+      //   // tools: query.user.tools,
+      // },
+      location: {
+        address: profile.persona.location,
+        education: profile.persona.education,
+        experience: profile.persona.experience,
+      },
+    };
   }
 }
 

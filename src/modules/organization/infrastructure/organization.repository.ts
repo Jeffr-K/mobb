@@ -8,9 +8,7 @@ export class OrganizationRepository extends ExtendedEntityRepository<Organizatio
   async selectOrganizationBy(data: { uuid: string }): Promise<Organization> {
     return this.createQueryBuilder()
       .select('*')
-      .where({
-        uuid: data.uuid,
-      })
+      .where({ uuid: data.uuid })
       .andWhere({ timestamp: { deletedAt: null } })
       .getSingleResult();
   }

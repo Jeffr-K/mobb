@@ -1,7 +1,7 @@
 import { Embedded, Entity, EntityRepositoryType, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
-import { Information } from '@modules/organization/core/value/company.information';
+import { Information } from '@modules/organization/core/value/embeddable/company.information';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { OrganizationRepository } from '@modules/organization/infrastructure/organization.repository';
 import { OrganizationRegisterCommand } from '@modules/organization/core/command/command.event';

@@ -2,7 +2,7 @@ import { CommandHandler } from '@nestjs/cqrs';
 import { InjectRepository, logger } from '@mikro-orm/nestjs';
 import { Organization } from '@modules/organization/core/entity/organization';
 import { OrganizationRepository } from '@modules/organization/infrastructure/organization.repository';
-import { Information } from '@modules/organization/core/value/company.information';
+import { Information } from '@modules/organization/core/value/embeddable/company.information';
 import { Inject, NotFoundException } from '@nestjs/common';
 import {
   OrganizationEditCommand,

@@ -1,6 +1,7 @@
 import { ExtendedEntityRepository } from '@infrastructure/database/postgres/extended-entity-repository';
 import { Feed } from '@modules/feed/core/entity/feed';
 import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
+import { EntityKey, QueryOrder } from '@mikro-orm/core';
 
 export class FeedRepository extends ExtendedEntityRepository<Feed> {
   async selectFeedBy(filter: { uuid: string }): Promise<Feed> {
@@ -17,18 +18,23 @@ export class FeedRepository extends ExtendedEntityRepository<Feed> {
     sort: string;
     limit: number;
   }): Promise<PaginatedResponse<Feed>> {
-    const queryBuilder = this.createQueryBuilder();
+    const queryBuilder = this.createQueryBuilder('f'); // 별칭 추가
 
-    queryBuilder.select('*').where({ timestamp: { deletedAt: null } });
+    queryBuilder
+      .select('*')
+      .where({ timestamp: { deletedAt: null } })
+      .leftJoinAndSelect('f.writer', 'writer')
+      .populate([{ field: 'writer' as EntityKey<Feed> }]);
 
     if (filter.sort) {
-      const [field, order] = filter.sort.split(':');
-      queryBuilder.orderBy({ [field]: order.toLowerCase() });
+      const [order] = filter.sort.split(':');
+      queryBuilder.orderBy({
+        timestamp: { createdAt: order === 'desc' ? QueryOrder.DESC : QueryOrder.ASC },
+      });
     }
 
     const page = Math.max(0, filter.page);
-    const size = Math.min(50, Math.max(1, filter.size)); // 최소 1, 최대 50
-
+    const size = Math.min(50, Math.max(1, filter.size));
     queryBuilder.limit(size).offset(page * size);
 
     const [items, total] = await Promise.all([queryBuilder.getResultList(), queryBuilder.getCount()]);

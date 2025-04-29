@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Profile } from '../../core/entity/profile';
 import {
@@ -6,10 +6,10 @@ import {
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
   ProfileGarageSearchQuery,
-  ProfileGaragesSearchQuery,
+  ProfileGaragesSearchQuery, ProfilePersonaSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
-} from '../../core/query/profile.query.event';
+} from '../../core/query/event/profile.query.event';
 import {
   ProfileActivityRegisterCommandAdapter,
   ProfileEducationRegisterCommandAdapter,
@@ -41,6 +41,8 @@ import { Garage } from '@modules/user/core/entity/garage';
 import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
 import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
+import { Persona } from '@modules/user/core/value/embeddable/persona';
+import { ProfilePersonaResponseAdapter } from '@modules/user/interface/adapter/out/profile-persona.response.adpater';
 
 @Controller({ path: 'profile', version: ['1'] })
 export class ProfileController {
@@ -65,6 +67,14 @@ export class ProfileController {
       new ProfileSearchQuery({ userId: user._id, options: { withExperience: true } }),
     );
     return new BusinessResponse<Profile>(profile, '프로필 조회 성공', HttpStatus.OK);
+  }
+
+  @Get('/persona')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  async getProfilePersona(@Secured() user: User): Promise<BusinessResponse<ProfilePersonaResponseAdapter>> {
+    const persona = await this.queryBus.execute(new ProfilePersonaSearchQuery({ user: user }));
+    return new BusinessResponse<ProfilePersonaResponseAdapter>(persona, '프로필 페르소나 조회 성공', HttpStatus.OK);
   }
 
   @Put('/persona')

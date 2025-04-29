@@ -8,4 +8,8 @@ export class Email {
   constructor(email: string) {
     this.email = email;
   }
+
+  get value(): string {
+    return this.email;
+  }
 }

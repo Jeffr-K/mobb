@@ -18,12 +18,14 @@ export class FeedsQueryEventHandler implements IQueryHandler<FeedsQueryEvent> {
   constructor(@InjectRepository(Feed) private readonly feedRepository: FeedRepository) {}
 
   async execute(query: FeedsQueryEvent): Promise<PaginatedResponse<Feed>> {
-    return this.feedRepository.selectFeedsBy({
+    const feeds = await this.feedRepository.selectFeedsBy({
       page: query.page,
       size: query.size,
       sort: query.sort,
       limit: Number(query.limit),
     });
+
+    return feeds;
   }
 }
 

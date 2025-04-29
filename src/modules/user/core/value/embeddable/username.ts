@@ -12,4 +12,12 @@ export class Username {
     this.username = data.username;
     this.nickname = data.nickname;
   }
+
+  get Username(): string {
+    return this.username;
+  }
+
+  get Nickname(): string {
+    return this.nickname;
+  }
 }

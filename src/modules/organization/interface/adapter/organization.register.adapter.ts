@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
-import { Information } from '@modules/organization/core/value/company.information';
+import { Information } from '@modules/organization/core/value/embeddable/company.information';
 
 export class OrganizationRegisterAdapter {
   @IsNotEmpty()

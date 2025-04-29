@@ -11,6 +11,7 @@ import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
 import { User } from '@modules/user/core/entity/user';
 import { UserReIssueSessionCommand } from '@modules/auth/core/command/token.command.event';
+import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
 
 @Controller({ path: 'auth', version: ['1'] })
 export class AuthController {
@@ -20,7 +21,6 @@ export class AuthController {
   async login(
     @Body() adapter: UserLoginCommandAdapter,
   ): Promise<BusinessResponse<{ accessToken: string; refreshToken: string }>> {
-    // login 을 하면,
     const result: { accessToken: string; refreshToken: string } = await this.commandBus.execute(
       new UserLoginCommand(adapter.email, adapter.password),
     );
@@ -28,7 +28,7 @@ export class AuthController {
   }
 
   @Delete('/logout')
-  @UseGuards(TokenGuard, RolesGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async logout(@Secured() user: User): Promise<BusinessResponse<boolean>> {
     const result: boolean = await this.commandBus.execute(new UserLogoutCommand({ email: user.email.email }));

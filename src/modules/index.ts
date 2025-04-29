@@ -9,7 +9,7 @@ import { AdministraterModule } from './administrater/administrater.module';
 import { FileModule } from './file/file.module';
 import { NotificationModule } from './notification/notification.module';
 import { PromotionModule } from '@modules/promotion/promotion.module';
-import { EmploymentModule } from '@modules/employment/employment.module';
+import { EmploymentModule } from '@modules/apply/employment.module';
 import { FeedModule } from '@modules/feed/feed.module';
 
 export const domainModules = [
