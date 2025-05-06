@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CommentEditCommandAdapter,
@@ -9,7 +21,7 @@ import {
   CommentEditCommandEvent,
   CommentRegisterCommandEvent,
   CommentRemoveCommandEvent,
-} from '@modules/feed/core/command/command.event';
+} from '@modules/feed/core/command/comment.command.event';
 import { CommentQueryEvent, CommentsQueryEvent } from '@modules/feed/core/query/query.event';
 import { Roles } from '@modules/auth/infrastructure/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
@@ -17,24 +29,30 @@ import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorato
 import { User } from '@modules/user/core/entity/user';
 import { Role } from '@modules/user/core/value/enum/role';
 import { Comment } from '@modules/feed/core/entity/comment';
-import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
+import { BusinessResponse, PaginatedResponse } from '@infrastructure/utils/base/base-response';
 
-@Controller({ path: 'comment', version: ['1'] })
+@Controller({ path: 'comments', version: ['1'] })
 export class CommentController {
   constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
-  async createComment(@Secured() user: User, @Body() adapter: CommentRegisterCommandAdapter): Promise<void> {
-    await this.commandBus.execute(
+  async createComment(
+    @Secured() user: User,
+    @Body() adapter: CommentRegisterCommandAdapter,
+    @Query('feedId') feedId: string,
+  ): Promise<BusinessResponse<{ _id: number }>> {
+    const result = await this.commandBus.execute(
       new CommentRegisterCommandEvent({
         writer: user,
-        feedId: adapter.feedId,
+        feedId: feedId,
         content: adapter.content,
         parentCommentId: adapter.parentCommentId,
       }),
     );
+
+    return new BusinessResponse<{ _id: number }>(result['_id'], '댓글 작성 성공', HttpStatus.CREATED);
   }
 
   @Put('/:commentId')
@@ -53,7 +71,7 @@ export class CommentController {
     await this.commandBus.execute(new CommentRemoveCommandEvent(commentUuid, adapter.writerUuid));
   }
 
-  @Get('/list')
+  @Get('/')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getComments(

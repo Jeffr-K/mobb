@@ -61,10 +61,6 @@ export class FeedDeleteParamAdapter {
 export class CommentRegisterCommandAdapter {
   @IsNotEmpty()
   @IsString()
-  feedId: string;
-
-  @IsNotEmpty()
-  @IsString()
   content: string;
 
   @IsOptional()

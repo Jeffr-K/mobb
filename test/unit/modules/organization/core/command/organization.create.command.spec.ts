@@ -49,27 +49,27 @@ describe('조직(organization) 생성 usecase', () => {
     entityManager = module.get(EntityManager);
   });
 
-  describe('새로운 조직(organization) 이 등록될 때', () => {
+  describe('Given > 새로운 조직(organization) 이 등록될 때', () => {
     const adapter = {
       name: 'Cave1',
       industry: 'Community',
-      description: 'Cave 는 세상을 바꾸는 커뮤니티를 만들고 있습니다.',
+      description: 'Persona 는 세상을 바꾸는 커뮤니티를 만들고 있습니다.',
       location: '우리집',
     };
 
     const command = new OrganizationRegisterCommand(adapter);
 
-    describe('when > 창업자가 이미 등록된 조직을 등록하려고 할 때', () => {
+    describe('When > 창업자가 이미 등록된 조직을 등록하려고 할 때', () => {
       beforeEach(() => {
         entityManager.persistAndFlush.mockRejectedValue(
           new UniqueConstraintViolationException(new Error('Duplicate entry')),
         );
       });
 
-      it('then > 이미 등록된 조직임을 알려야 한다.', async () => {
+      it('Then > 이미 등록된 조직임을 알려야 한다.', async () => {
         await expect(handler.execute(command)).rejects.toThrow(OrganizationNameAlreadyRegisteredException);
       });
-      it('then > 조직 등록이 실패해야 한다.', async () => {
+      it('Then > 조직 등록이 실패해야 한다.', async () => {
         await expect(handler.execute(command)).rejects.toThrow();
         expect(entityManager.persistAndFlush).toHaveBeenCalledTimes(1);
         await expect(entityManager.persistAndFlush).rejects.toThrow(UniqueConstraintViolationException);

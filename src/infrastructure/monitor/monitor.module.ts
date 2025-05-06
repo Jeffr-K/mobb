@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PrometheusMonitorModule } from './prometheus/prometheus.module';
-import { SentryMonitorModule } from './sentry/sentry.module';
+import { SentryModule } from './sentry/sentry.module';
 
 // https://docs.sentry.io/platforms/javascript/guides/nestjs/install/
 @Module({
-  imports: [SentryMonitorModule, PrometheusMonitorModule],
+  imports: [SentryModule, PrometheusMonitorModule],
 })
 export class MonitorModule {}

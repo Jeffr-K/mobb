@@ -6,7 +6,7 @@ import {
   FeedCreateCommandEvent,
   FeedDeleteCommandEvent,
   FeedEditCommandEvent,
-} from '@modules/feed/core/command/command.event';
+} from '@modules/feed/core/command/comment.command.event';
 import { InjectRepository, logger } from '@mikro-orm/nestjs';
 import { FeedRepository } from '@modules/feed/infrastructure/repository/feed.repository';
 import { Feed } from '@modules/feed/core/entity/feed';

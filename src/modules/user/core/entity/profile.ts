@@ -1,6 +1,6 @@
 import { Collection, Embedded, Entity, EntityRepositoryType, OneToMany, OneToOne, PrimaryKey } from '@mikro-orm/core';
-import { AggregateRootIdentifier } from 'src/infrastructure/utils/structure/aggregate-root-id';
-import { ProfileRepository } from '../../infrastructure/repository/profile.repository';
+
+
 import { Persona } from '@modules/user/core/value/embeddable/persona';
 import { Experience } from '@modules/user/core/entity/experience';
 import { Education } from '@modules/user/core/entity/education';
@@ -11,6 +11,8 @@ import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { User } from '@modules/user/core/entity/user';
 import { ProfileConcreteBuilder } from '@modules/user/core/factory/profile.builder';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { ProfileRepository } from '@modules/user/infrastructure/repository/profile.repository';
+import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 
 @Entity({ repository: () => ProfileRepository })
 export class Profile extends AggregateRoot {

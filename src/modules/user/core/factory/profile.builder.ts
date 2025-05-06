@@ -1,10 +1,10 @@
-import { AggregateRootIdentifier } from 'src/infrastructure/utils/structure/aggregate-root-id';
 import { Profile } from '../entity/profile';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import day from 'dayjs';
 import { User } from '@modules/user/core/entity/user';
 import { Persona } from '@modules/user/core/value/embeddable/persona';
 import { Skill } from '@modules/user/core/value/embeddable/skill';
+import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 
 export interface ProfileBuilder {
   build(): Profile;

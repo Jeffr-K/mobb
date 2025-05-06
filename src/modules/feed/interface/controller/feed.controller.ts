@@ -19,7 +19,7 @@ import {
   FeedCreateCommandEvent,
   FeedDeleteCommandEvent,
   FeedEditCommandEvent,
-} from '@modules/feed/core/command/command.event';
+} from '@modules/feed/core/command/comment.command.event';
 import { FeedQueryEvent, FeedsQueryEvent } from '@modules/feed/core/query/query.event';
 import { BusinessResponse, PaginatedResponse } from '@infrastructure/utils/base/base-response';
 import { Roles } from '@modules/auth/infrastructure/decorators/roles.decorator';

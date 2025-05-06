@@ -7,13 +7,13 @@ import {
   FeedCreateCommandEventHandler,
   FeedDeleteCommandEventHandler,
   FeedEditCommandEventHandler,
-} from '@modules/feed/core/command/command.event.handler';
+} from '@modules/feed/core/command/comment.command.event.handler';
 import {
   CommentQueryEventHandler,
   CommentsQueryEventHandler,
   FeedQueryEventHandler,
   FeedsQueryEventHandler,
-} from '@modules/feed/core/query/query.event.handler';
+} from '@modules/feed/core/query/comment.query.event.handler';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Feed } from '@modules/feed/core/entity/feed';
 import { CqrsModule } from '@nestjs/cqrs';

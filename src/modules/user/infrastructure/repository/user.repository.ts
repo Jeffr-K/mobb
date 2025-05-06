@@ -1,5 +1,5 @@
-import { ExtendedEntityRepository } from 'src/infrastructure/database/postgres/extended-entity-repository';
 import { User } from '../../core/entity/user';
+import { ExtendedEntityRepository } from '@infrastructure/database/postgres/extended-entity-repository';
 
 export class UserRepository extends ExtendedEntityRepository<User> {
   async selectUserBy(data: { userId?: number; email?: string }): Promise<User> {

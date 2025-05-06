@@ -11,3 +11,15 @@ export class FeedNotFoundException extends HttpException {
     super('Feed not found', HttpStatus.NOT_FOUND);
   }
 }
+
+export class FeedCategoryRegistrationFailedException extends HttpException {
+  constructor() {
+    super('FeedCategory registration failed', HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class ParentCategoryNotFoundException extends HttpException {
+  constructor() {
+    super('Parent category not found', HttpStatus.NOT_FOUND);
+  }
+}
