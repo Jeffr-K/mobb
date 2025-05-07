@@ -8,7 +8,7 @@ export class EducationConcreteBuilder {
 
   constructor() {
     this.education = new Education();
-    this.education.identifier = new AggregateRootIdentifier();
+    this.education.identifier = new AggregateRootIdentifier({});
   }
 
   setProfile(profile: Profile): this {

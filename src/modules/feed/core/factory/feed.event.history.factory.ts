@@ -11,7 +11,7 @@ export class FeedEventHistoryConcreteBuilder implements FeedEventHistoryConcrete
 
   constructor() {
     this.feedEventHistory = new FeedEventHistory();
-    this.feedEventHistory.identifier = new AggregateRootIdentifier();
+    this.feedEventHistory.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {

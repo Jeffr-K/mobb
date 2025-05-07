@@ -1,6 +1,6 @@
-import { context } from '../../../../../utils/marker';
+import { context } from '../../../../../../utils/marker';
 import { FeedCreateCommandEvent } from '@modules/feed/core/command/comment.command.event';
-import { ExtendedUserBuilder } from '../../../../../utils/extended-entity-builder';
+import { ExtendedUserBuilder } from '../../../../../../utils/extended-entity-builder';
 import { FeedImage } from '@modules/feed/interface/adapter/adapter';
 import { FeedCreateCommandEventHandler } from '@modules/feed/core/command/comment.command.event.handler';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -80,6 +80,4 @@ describe('FeedCreateCommandEventHandler', () => {
   //     await expect(handler.execute(command)).rejects.toThrow(FeedRegistrationFailedException);
   //   });
   // });
-
-
 });

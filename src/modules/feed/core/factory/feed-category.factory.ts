@@ -7,7 +7,7 @@ export class FeedCategoryConcreteBuilder {
 
   constructor() {
     this.feedCategory = new FeedCategory();
-    this.feedCategory.identifier = new AggregateRootIdentifier();
+    this.feedCategory.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {

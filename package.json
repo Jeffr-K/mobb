@@ -32,7 +32,7 @@
     "@mikro-orm/core": "^6.3.6",
     "@mikro-orm/migrations": "^6.3.6",
     "@mikro-orm/mongodb": "^6.3.6",
-    "@mikro-orm/nestjs": "^5.0.0",
+    "@mikro-orm/nestjs": "^6.1.1",
     "@mikro-orm/postgresql": "^6.4.0",
     "@mikro-orm/reflection": "^6.3.6",
     "@mikro-orm/seeder": "^6.3.6",
@@ -52,9 +52,9 @@
     "@nestjs/terminus": "^10.2.3",
     "@sentry/cli": "^2.33.1",
     "@sentry/integrations": "^7.114.0",
-    "@sentry/nestjs": "^8.26.0",
-    "@sentry/node": "^9.15.0",
-    "@sentry/profiling-node": "^9.15.0",
+    "@sentry/nestjs": "^9.16.0",
+    "@sentry/node": "^9.16.0",
+    "@sentry/profiling-node": "^9.16.0",
     "@types/bcrypt": "^5.0.2",
     "@types/compression": "^1.7.5",
     "@types/lodash": "^4.17.13",
@@ -126,6 +126,9 @@
     "typescript": "^4.3.5"
   },
   "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/jest.setup.ts"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
@@ -142,6 +145,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
+      "@/(.*)": "<rootDir>/src/$1",
       "@modules/(.*)": "<rootDir>/src/modules/$1",
       "@infrastructure/(.*)": "<rootDir>/src/infrastructure/$1"
     },

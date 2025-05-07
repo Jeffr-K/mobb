@@ -12,7 +12,7 @@ export class ActivityConcreteBuilder implements ActivityBuilder {
 
   constructor() {
     this.activity = new Activity();
-    this.activity.identifier = new AggregateRootIdentifier();
+    this.activity.identifier = new AggregateRootIdentifier({});
   }
 
   setProfile(profile: any): this {

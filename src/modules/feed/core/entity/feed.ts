@@ -7,6 +7,7 @@ import { FeedConcreteBuilder } from '@modules/feed/core/factory/feed.factory';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { User } from '@modules/user/core/entity/user';
 import { FeedImage } from '@modules/feed/interface/adapter/adapter';
+import { FeedCategory } from '@modules/feed/core/entity/feed-category';
 
 @Entity({ repository: () => FeedRepository })
 export class Feed extends AggregateRoot {
@@ -38,17 +39,32 @@ export class Feed extends AggregateRoot {
   })
   writer!: User;
 
+  @ManyToOne(() => FeedCategory, {
+    serializer: (category: FeedCategory) => {
+      return { _id: category?._id, identifier: category.identifier, name: category?.name };
+    },
+    hidden: false,
+  })
+  category!: FeedCategory;
+
   constructor() {
     super();
   }
 
-  static async register(feed: { title: string; content: string; images: FeedImage[]; user: User }): Promise<Feed> {
+  static async register(feed: {
+    title: string;
+    content: string;
+    images: FeedImage[];
+    user: User;
+    category: FeedCategory;
+  }): Promise<Feed> {
     return new FeedConcreteBuilder()
       .setTitle(feed.title)
       .setContent(feed.content)
       .setImages(feed.images)
       .setWriter(feed.user)
       .setTimestamp()
+      .setCategory(feed.category)
       .build();
   }
 

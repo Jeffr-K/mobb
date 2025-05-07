@@ -13,7 +13,7 @@ export class CommentConcreteBuilder implements CommentConcreteBuilder {
 
   constructor() {
     this.comment = new Comment();
-    this.comment.identifier = new AggregateRootIdentifier();
+    this.comment.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {

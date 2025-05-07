@@ -44,6 +44,7 @@ export class FeedController {
         content: adapter.content,
         images: adapter.images,
         user: user,
+        categoryUuid: adapter.categoryUuid,
       }),
     );
   }

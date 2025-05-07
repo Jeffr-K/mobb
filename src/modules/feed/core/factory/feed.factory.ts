@@ -3,6 +3,7 @@ import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { User } from '@modules/user/core/entity/user';
 import { FeedImage } from '@modules/feed/interface/adapter/adapter';
+import { FeedCategory } from '@modules/feed/core/entity/feed-category';
 
 export interface FeedConcreteBuilder {
   build(): Feed;
@@ -13,7 +14,7 @@ export class FeedConcreteBuilder implements FeedConcreteBuilder {
 
   constructor() {
     this.feed = new Feed();
-    this.feed.identifier = new AggregateRootIdentifier();
+    this.feed.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {
@@ -47,6 +48,11 @@ export class FeedConcreteBuilder implements FeedConcreteBuilder {
       deletedAt: null,
     });
 
+    return this;
+  }
+
+  setCategory(category: FeedCategory): this {
+    this.feed.category = category;
     return this;
   }
 

@@ -49,6 +49,6 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
       },
     }),
   ],
-  exports: [MikroOrmModule],
+  exports: [],
 })
 export class RDBMSModule {}

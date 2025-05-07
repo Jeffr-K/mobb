@@ -13,13 +13,31 @@ export class FeedNotFoundException extends HttpException {
 }
 
 export class FeedCategoryRegistrationFailedException extends HttpException {
-  constructor() {
-    super('FeedCategory registration failed', HttpStatus.BAD_REQUEST);
+  constructor(message: string = 'FeedCategory registration failed') {
+    super(message, HttpStatus.BAD_REQUEST);
   }
 }
 
 export class ParentCategoryNotFoundException extends HttpException {
   constructor() {
     super('Parent category not found', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class FeedCategoryNotFoundException extends HttpException {
+  constructor(message: string = 'FeedCategory not found') {
+    super(message, HttpStatus.NOT_FOUND);
+  }
+}
+
+export class FeedCategoryDeletionFailedException extends HttpException {
+  constructor(message: string = 'FeedCategory deletion failed') {
+    super(message, HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class FeedCategoryHasAssociatedFeedsException extends HttpException {
+  constructor(message: string = 'FeedCategory has associated feeds') {
+    super(message, HttpStatus.BAD_REQUEST);
   }
 }

@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import {
   CommentEditCommandEvent,
   CommentRegisterCommandEvent,
@@ -20,15 +20,20 @@ import {
 } from '@infrastructure/database/postgres/common-exception';
 import { CommentRepository } from '@modules/feed/infrastructure/repository/comment.repository';
 import { Comment } from '@modules/feed/core/entity/comment';
+import { FeedCategoryQuery } from '../query/category.query.event';
 
 @CommandHandler(FeedCreateCommandEvent)
 export class FeedCreateCommandEventHandler implements ICommandHandler<FeedCreateCommandEvent> {
-  constructor(@Inject(EntityManager) private readonly entityManager: EntityManager) {}
+  constructor(
+    @Inject(EntityManager) private readonly entityManager: EntityManager,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   async execute(command: FeedCreateCommandEvent): Promise<void> {
     await this.entityManager.transactional(async (manager: EntityManager): Promise<void> => {
       try {
-        const feed = await Feed.register({ ...command });
+        const feedCategory = await this.queryBus.execute(new FeedCategoryQuery({ categoryUuid: command.categoryUuid }));
+        const feed = await Feed.register({ ...command, ...feedCategory });
         const history = await FeedEventHistory.register({ eventType: 'create', eventContent: 'create feed' });
         await manager.persistAndFlush(feed);
         await manager.persistAndFlush(history);

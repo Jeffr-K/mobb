@@ -9,7 +9,7 @@ export class ExperienceConcreteBuilder {
 
   constructor() {
     this.experience = new Experience();
-    this.experience.identifier = new AggregateRootIdentifier();
+    this.experience.identifier = new AggregateRootIdentifier({});
   }
 
   setProfile(profile: Profile): this {

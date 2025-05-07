@@ -1,6 +1,5 @@
 import { Collection, Embedded, Entity, EntityRepositoryType, OneToMany, OneToOne, PrimaryKey } from '@mikro-orm/core';
 
-
 import { Persona } from '@modules/user/core/value/embeddable/persona';
 import { Experience } from '@modules/user/core/entity/experience';
 import { Education } from '@modules/user/core/entity/education';

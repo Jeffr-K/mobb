@@ -17,7 +17,7 @@ export class UserConcreteBuilder implements UserBuilder {
 
   constructor() {
     this.user = new User();
-    this.user.identifier = new AggregateRootIdentifier();
+    this.user.identifier = new AggregateRootIdentifier({});
   }
 
   setUsername(username: string, nickname?: string): this {

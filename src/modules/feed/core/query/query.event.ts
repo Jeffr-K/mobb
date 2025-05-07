@@ -1,3 +1,5 @@
+import { Nullable } from '@infrastructure/utils/types/types';
+
 export class FeedsQueryEvent {
   readonly page: number;
   readonly size: number;
@@ -13,10 +15,12 @@ export class FeedsQueryEvent {
 }
 
 export class FeedQueryEvent {
-  readonly feedId: string;
+  readonly feedId?: Nullable<string>;
+  readonly categoryId?: Nullable<number>;
 
-  constructor(event: { feedId: string }) {
+  constructor(event: { feedId?: Nullable<string>; categoryId?: Nullable<number> }) {
     this.feedId = event.feedId;
+    this.categoryId = event.categoryId;
   }
 }
 

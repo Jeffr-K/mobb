@@ -6,7 +6,8 @@ import {
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
   ProfileGarageSearchQuery,
-  ProfileGaragesSearchQuery, ProfilePersonaSearchQuery,
+  ProfileGaragesSearchQuery,
+  ProfilePersonaSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
 } from '../../core/query/event/profile.query.event';

@@ -48,6 +48,10 @@ export class FeedCreateAdapter {
   @Type(() => FeedImage)
   @ArrayMaxSize(10)
   images: FeedImage[];
+
+  @IsString()
+  @IsNotEmpty()
+  categoryUuid: string;
 }
 
 export class FeedEditAdapter extends PartialType(FeedCreateAdapter) {}

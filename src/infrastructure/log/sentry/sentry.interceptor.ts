@@ -2,6 +2,8 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import * as Sentry from '@sentry/node';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Catch, ExceptionFilter } from '@nestjs/common';
+import { SentryExceptionCaptured } from '@sentry/nestjs';
 
 @Injectable()
 export class SentryInterceptor implements NestInterceptor {
@@ -12,5 +14,13 @@ export class SentryInterceptor implements NestInterceptor {
         throw error;
       }),
     );
+  }
+}
+
+@Catch()
+export class YourCatchAllExceptionFilter implements ExceptionFilter {
+  @SentryExceptionCaptured()
+  catch(exception, host): void {
+    // your implementation here
   }
 }

@@ -6,12 +6,14 @@ export class FeedCreateCommandEvent {
   readonly content: string;
   readonly images: FeedImage[];
   readonly user: User;
+  readonly categoryUuid: string;
 
-  constructor(event: { title: string; content: string; images: FeedImage[]; user: User }) {
+  constructor(event: { title: string; content: string; images: FeedImage[]; user: User; categoryUuid: string }) {
     this.content = event.content;
     this.title = event.title;
     this.images = event.images;
     this.user = event.user;
+    this.categoryUuid = event.categoryUuid;
   }
 }
 

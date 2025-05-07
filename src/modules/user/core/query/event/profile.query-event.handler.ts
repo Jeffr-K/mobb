@@ -4,7 +4,8 @@ import {
   ProfileEducationsSearchQuery,
   ProfileExperiencesSearchQuery,
   ProfileGarageSearchQuery,
-  ProfileGaragesSearchQuery, ProfilePersonaSearchQuery,
+  ProfileGaragesSearchQuery,
+  ProfilePersonaSearchQuery,
   ProfileSearchQuery,
   ProfilesSearchQuery,
 } from './profile.query.event';

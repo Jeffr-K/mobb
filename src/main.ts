@@ -1,18 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { winstonLogger } from '@infrastructure/log/winston';
 import helmet from 'helmet';
 import { MikroORM } from '@mikro-orm/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule, {
-      logger: winstonLogger,
       cors: true,
     });
+
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
     const config = new DocumentBuilder()
       .setTitle('Persona API Documentation')

@@ -7,6 +7,7 @@ export class FeedCategoryRepository extends ExtendedEntityRepository<FeedCategor
     _id?: Nullable<number>;
     uuid?: Nullable<string>;
     name?: Nullable<string>;
+    parent?: Nullable<FeedCategory>;
   }): Promise<Nullable<FeedCategory>> {
     let condition = {};
 
@@ -17,6 +18,13 @@ export class FeedCategoryRepository extends ExtendedEntityRepository<FeedCategor
       };
     }
 
+    if (filter.uuid) {
+      condition = {
+        ...condition,
+        uuid: filter.uuid,
+      };
+    }
+
     if (filter.name) {
       condition = {
         ...condition,
@@ -24,10 +32,10 @@ export class FeedCategoryRepository extends ExtendedEntityRepository<FeedCategor
       };
     }
 
-    if (filter.uuid) {
+    if (filter.parent) {
       condition = {
         ...condition,
-        uuid: filter.uuid,
+        parent: filter.parent,
       };
     }
 

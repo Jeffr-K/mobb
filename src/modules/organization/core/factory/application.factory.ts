@@ -15,7 +15,7 @@ export class ApplicationConcreteBuilder implements ApplicationBuilder {
 
   constructor() {
     this.application = new Application();
-    this.application.identifier = new AggregateRootIdentifier();
+    this.application.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {

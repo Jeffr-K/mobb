@@ -13,7 +13,7 @@ export class OrganizationConcreteBuilder implements OrganizationBuilder {
 
   constructor() {
     this.organization = new Organization();
-    this.organization.identifier = new AggregateRootIdentifier();
+    this.organization.identifier = new AggregateRootIdentifier({});
   }
 
   get Identifier(): AggregateRootIdentifier {

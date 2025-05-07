@@ -7,7 +7,7 @@ export class GarageConcreteBuilder {
 
   constructor() {
     this.garage = new Garage();
-    this.garage.identifier = new AggregateRootIdentifier();
+    this.garage.identifier = new AggregateRootIdentifier({});
   }
 
   setProfile(profile: Profile): this {

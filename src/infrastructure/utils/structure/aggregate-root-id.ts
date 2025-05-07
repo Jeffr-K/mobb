@@ -1,5 +1,6 @@
 import { v4 } from 'uuid';
 import { Embeddable, Property } from '@mikro-orm/postgresql';
+import { Nullable } from '@infrastructure/utils/types/types';
 
 @Embeddable()
 export class AggregateRootIdentifier {
@@ -8,4 +9,13 @@ export class AggregateRootIdentifier {
 
   @Property({ default: 1 })
   version!: number;
+
+  constructor(data: { uuid?: Nullable<string>; version?: Nullable<number> }) {
+    this.uuid = data.uuid ?? v4();
+    this.version = data.version ?? 1;
+  }
+
+  async increaseVersion(): Promise<AggregateRootIdentifier> {
+    return new AggregateRootIdentifier({ uuid: this.uuid, version: this.version + 1 });
+  }
 }

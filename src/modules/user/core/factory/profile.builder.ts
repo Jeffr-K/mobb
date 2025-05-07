@@ -15,7 +15,7 @@ export class ProfileConcreteBuilder implements ProfileBuilder {
 
   constructor() {
     this.profile = new Profile();
-    this.profile.identifier = new AggregateRootIdentifier();
+    this.profile.identifier = new AggregateRootIdentifier({});
   }
 
   setPersona(): this {
