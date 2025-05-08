@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { domainModules } from './modules';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@infrastructure/database/database.module';
-import { FeedModule } from '@modules/feed/feed.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from '@infrastructure/log/logger.module';
+import { HealthModule } from '@infrastructure/health/health.module';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { LoggerModule } from '@infrastructure/log/logger.module';
     DatabaseModule,
     EventEmitterModule.forRoot(),
     LoggerModule,
+    HealthModule,
   ],
   exports: [...domainModules, ConfigModule, DatabaseModule],
 })

@@ -5,9 +5,10 @@ import { SentryInterceptor } from '@infrastructure/log/sentry/sentry.interceptor
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SentryTestController } from '@infrastructure/log/sentry/sentry-test.controller';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { RequestContextModule } from '../context/request-context.module';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, RequestContextModule],
   controllers: [SentryTestController],
   providers: [
     SentryInterceptor,
