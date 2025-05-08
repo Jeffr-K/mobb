@@ -15,3 +15,7 @@ export class GetHealthStatusQuery {
 
   constructor(public readonly detailed: boolean = false) {}
 }
+
+export class OtherEvent {
+  constructor(public readonly data: any) {}
+}
