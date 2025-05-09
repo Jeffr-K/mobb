@@ -2,16 +2,15 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import * as Sentry from '@sentry/node';
 
 export class RequestContextUtils {
-
   /**
-   * AsyncLocalStorage 에서 요청 ID 를 가져옵니다.
+   * AsyncLocalStorage 에서 요청 ID 조회.
    */
   static getRequestId(asyncStorage?: AsyncLocalStorage<Map<string, any>>): string | undefined {
     return asyncStorage?.getStore()?.get('requestId');
   }
 
   /**
-   * Sentry 스코프에 요청 ID 를 태그로 추가
+   * Sentry 스코프에 요청 ID 를 태그 추가.
    */
   static setSentryRequestIdTag(asyncStorage?: AsyncLocalStorage<Map<string, any>>): void {
     const requestId = this.getRequestId(asyncStorage);
@@ -24,7 +23,7 @@ export class RequestContextUtils {
   }
 
   /**
-   * Sentry.withScope 함수와 함께 요청 ID를 사용하는 유틸리티 함수입니다.
+   * Sentry.withScope 함수와 함께 요청 ID 를 사용하는 유틸리티 함수.
    */
   static withSentryScope<T>(
     asyncStorage: AsyncLocalStorage<Map<string, any>> | undefined,

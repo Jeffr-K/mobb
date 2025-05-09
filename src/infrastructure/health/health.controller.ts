@@ -3,11 +3,11 @@ import { CommandBus, QueryBus, EventBus } from '@nestjs/cqrs';
 import { HealthCheckService, HttpHealthIndicator, HealthCheck } from '@nestjs/terminus';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { RequestId } from '@infrastructure/log/context/decorators/request-context.decorator';
 import { HealthService } from './health.service';
 import { PerformHealthCheckCommand } from './event';
 import { GetHealthStatusQuery } from './event';
 import { HealthCheckCompletedEvent } from './event';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @Controller('health')
 export class HealthController {

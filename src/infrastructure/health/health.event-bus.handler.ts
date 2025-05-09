@@ -3,8 +3,8 @@ import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
-import { RequestId } from '@infrastructure/log/context/decorators/request-context.decorator';
 import { HealthCheckCompletedEvent } from '@infrastructure/health/event';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @EventsHandler(HealthCheckCompletedEvent)
 export class HealthCheckCompletedEventHandler implements IEventHandler<HealthCheckCompletedEvent> {

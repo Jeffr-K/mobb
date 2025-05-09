@@ -1,6 +1,8 @@
 import { ExtendedEntityRepository } from '@infrastructure/database/postgres/extended-entity-repository';
 import { FeedCategory } from '@modules/feed/core/entity/feed-category';
 import { Nullable } from '@infrastructure/utils/types/types';
+import { PaginatedResponse } from '@/infrastructure/utils/base/base-response';
+import { QueryOrder } from '@mikro-orm/postgresql';
 
 export class FeedCategoryRepository extends ExtendedEntityRepository<FeedCategory> {
   async selectFeedCategoryBy(filter: {
@@ -44,5 +46,33 @@ export class FeedCategoryRepository extends ExtendedEntityRepository<FeedCategor
       .where({ ...condition })
       .andWhere({ timestamp: { deletedAt: null } })
       .getSingleResult();
+  }
+
+  async selectFeedCategoriesBy(filter: {
+    page: number;
+    limit: number;
+    offset: number;
+    orderBy: string;
+  }): Promise<PaginatedResponse<FeedCategory>> {
+    const order = filter.orderBy.startsWith('-') ? QueryOrder.DESC : QueryOrder.ASC;
+    const orderByField = filter.orderBy.startsWith('-') ? filter.orderBy.substring(1) : filter.orderBy;
+
+    const [categories, count] = await this.createQueryBuilder('fc')
+      .select('*')
+      .where({})
+      .orderBy({
+        [orderByField]: order,
+      })
+      .limit(filter.limit)
+      .offset(filter.offset)
+      .getResultAndCount();
+
+    return {
+      items: categories,
+      total: count,
+      pageCount: Math.ceil(count / filter.limit),
+      currentPage: filter.page,
+      pageSize: filter.limit,
+    };
   }
 }

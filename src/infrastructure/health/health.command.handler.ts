@@ -5,7 +5,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
 import { HealthService } from './health.service';
 import { PerformHealthCheckCommand } from '@infrastructure/health/event';
-import { RequestId } from '@infrastructure/log/context/decorators/store.decorator';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @CommandHandler(PerformHealthCheckCommand)
 export class PerformHealthCheckCommandHandler implements ICommandHandler<PerformHealthCheckCommand> {
@@ -25,7 +25,7 @@ export class PerformHealthCheckCommandHandler implements ICommandHandler<Perform
     const result = await this.healthService.checkHealth({
       source: 'command',
       type: command.checkType,
-      params: command.params
+      params: command.params,
     });
 
     this.logger.log(`CommandHandler: Command completed with requestId: ${this.requestId}`);

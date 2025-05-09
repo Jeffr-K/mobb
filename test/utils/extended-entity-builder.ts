@@ -79,7 +79,7 @@ export class ExtendedFeedCategoryBuilder extends FeedCategoryConcreteBuilder {
         throw new Error('ExtendedFeedCategoryBuilder.take: count must be greater than 0');
       case 1:
         return this.random(withParent).setName(faker.lorem.word()).setTimestamp().build();
-      case 2:
+      default:
         return Array.from({ length: count }, () => this.random(withParent).build());
     }
   }

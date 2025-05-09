@@ -13,7 +13,6 @@ import {
 } from '@modules/feed/core/exception/exception';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Transactional } from '@mikro-orm/core';
-import { Nullable } from '@infrastructure/utils/types/types';
 import { FeedQueryEvent } from '@modules/feed/core/query/query.event';
 
 @CommandHandler(CategoryCreateCommandEvent)

@@ -142,9 +142,7 @@ describe('CommentCommandHandler', () => {
 
       context('상위 카테고리가 존재하는 경우', () => {
         beforeEach(() => {
-          // 호출 순서에 따라 다른 값 반환하도록 구현
           mockFeedCategoryRepository.selectFeedCategoryBy = jest.fn().mockImplementation((filter) => {
-            // 부모 카테고리 조회 시
             if (filter.uuid === parentCategory.identifier.uuid) {
               return Promise.resolve(parentCategory);
             }
@@ -213,7 +211,7 @@ describe('CommentCommandHandler', () => {
           await expect(categoryDeleteHandler.execute(command)).rejects.toThrowError(FeedCategoryNotFoundException);
         });
       });
-      context('카테고리에 피드가 하나 이상 존재할 경우', () => {
+      context('if category has feeds greater than 1', () => {
         const existingCategory = ExtendedFeedCategoryBuilder.take(1, false);
         const feeds = ExtendedFeedBuilder.take(2, { withCategory: existingCategory });
 
@@ -221,35 +219,35 @@ describe('CommentCommandHandler', () => {
           mockFeedCategoryRepository.selectFeedCategoryBy.mockResolvedValue(existingCategory);
           mockQueryBus.execute.mockResolvedValue(feeds);
         });
-        it('카테고리 삭제가 실패 되어야 한다.', async () => {
+        it('should be failed category delete operation.', async () => {
           await expect(categoryDeleteHandler.execute(command)).rejects.toThrowError(
             FeedCategoryHasAssociatedFeedsException,
           );
         });
       });
-      context('카테고리에 피드가 하나라도 존재하지 않을 경우', () => {
+      context('if category has no feeds', () => {
         beforeEach(() => {
           mockFeedCategoryRepository.selectFeedCategoryBy.mockResolvedValueOnce(existingCategory);
           mockQueryBus.execute.mockResolvedValue([]);
         });
-        it('카테고리가 정상적으로 삭제된다.', async () => {
+        it('should be deleted successfully.', async () => {
           await categoryDeleteHandler.execute(command);
           expect(mockQueryBus.execute).toHaveBeenCalledWith(new FeedQueryEvent({ categoryId: existingCategory._id }));
         });
       });
     });
-    describe('하위 카테고리 삭제 요청이 오면', () => {
+    describe('when sub category is going to be deleted', () => {
       const existingCategory = ExtendedFeedCategoryBuilder.take(1, true);
       const command = new CategoryDeleteCommandEvent({
         categoryUuid: existingCategory.identifier.uuid,
         forceUpdate: false,
       });
-      context('변경할 카테고리가 존재하지 않는 경우', () => {
+      context('if the editable category is no exists', () => {
         beforeEach(() => {
           mockFeedCategoryRepository.selectFeedCategoryBy.mockResolvedValue(null);
         });
 
-        it('카테고리 삭제 요청이 실패되어야 한다.', async () => {
+        it('should be failed the category delete operation.', async () => {
           await expect(categoryDeleteHandler.execute(command)).rejects.toThrowError(FeedCategoryNotFoundException);
         });
       });

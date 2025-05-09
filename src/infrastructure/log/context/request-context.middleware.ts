@@ -5,7 +5,6 @@ import { REQUEST_CONTEXT_STORAGE } from './constants';
 
 @Injectable()
 export class RequestContextMiddleware implements NestMiddleware {
-
   constructor(@Inject(REQUEST_CONTEXT_STORAGE) private readonly als: AsyncLocalStorage<Map<string, any>>) {}
 
   use(req: any, res: any, next: (error?: any) => void) {

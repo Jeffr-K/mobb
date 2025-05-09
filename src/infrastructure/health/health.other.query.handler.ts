@@ -4,7 +4,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
-import { RequestId } from '@infrastructure/log/context/decorators/store.decorator';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @QueryHandler(OtherEvent)
 export class HealthCheckOtherQueryEventHandler implements IQueryHandler<OtherEvent> {

@@ -8,13 +8,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { RequestContextUtils } from '@infrastructure/log/context/request-context-utils';
 import { RequestContextModule } from '@infrastructure/log/context/request-context.module';
 import { yellow, cyan, gray, blue, green, red, magenta } from 'colorette';
-
-// 문자열 패딩 헬퍼 함수
-function fixedWidthPadEnd(str: string, length: number, padChar = ' '): string {
-  const visibleLength = str.replace(/\u001b\[\d+m/g, '').length; // ANSI 색상 코드 제거
-  const paddingLength = Math.max(0, length - visibleLength);
-  return str + padChar.repeat(paddingLength);
-}
+import { fixedWidthPadEnd } from '@infrastructure/utils/funcs/string-utils';
 
 @Module({
   imports: [
@@ -35,12 +29,18 @@ function fixedWidthPadEnd(str: string, length: number, padChar = ' '): string {
               const coloredLevel = (() => {
                 const upperLevel = level.toUpperCase();
                 switch (level) {
-                  case 'error':   return red(upperLevel);
-                  case 'warn':    return yellow(upperLevel);
-                  case 'info':    return green(upperLevel);
-                  case 'debug':   return blue(upperLevel);
-                  case 'verbose': return magenta(upperLevel);
-                  default: return upperLevel;
+                  case 'error':
+                    return red(upperLevel);
+                  case 'warn':
+                    return yellow(upperLevel);
+                  case 'info':
+                    return green(upperLevel);
+                  case 'debug':
+                    return blue(upperLevel);
+                  case 'verbose':
+                    return magenta(upperLevel);
+                  default:
+                    return upperLevel;
                 }
               })();
               const levelOutput = fixedWidthPadEnd(coloredLevel, 7);
@@ -56,8 +56,9 @@ function fixedWidthPadEnd(str: string, length: number, padChar = ' '): string {
 
               // [HealthController]와 [requestId] 사이에 공백 두 개
               const msOutput = ms ? gray(` ++${ms}`) : '';
+              const timestampStr = typeof timestamp === 'string' ? timestamp : String(timestamp);
 
-              return `${gray(timestamp as string)} ${levelOutput} ${contextOutput} ${requestIdOutput} ${message}${msOutput}`;
+              return `${gray(timestampStr)} ${levelOutput} ${contextOutput} ${requestIdOutput} ${message}${msOutput}`;
             } else {
               const levelOutput = level.toUpperCase().padEnd(7);
               const contextStr = context ? `[${context}]` : '';
@@ -66,7 +67,7 @@ function fixedWidthPadEnd(str: string, length: number, padChar = ' '): string {
               const requestIdOutput = `[${requestIdStr}]`;
               const msOutput = ms ? ` ++${ms}` : '';
 
-              return `${timestamp} ${levelOutput} ${contextOutput}  ${requestIdOutput} ${message}${msOutput}`;
+              return `${timestamp} ${levelOutput} ${contextOutput}  ${requestIdOutput} ${message} ${msOutput}`;
             }
           },
         );
@@ -80,11 +81,7 @@ function fixedWidthPadEnd(str: string, length: number, padChar = ' '): string {
         );
 
         // JSON 포맷 (파일 로깅용)
-        const jsonFormat = winston.format.combine(
-          winston.format.timestamp(),
-          requestIdFormat(),
-          winston.format.json()
-        );
+        const jsonFormat = winston.format.combine(winston.format.timestamp(), requestIdFormat(), winston.format.json());
 
         return {
           level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',

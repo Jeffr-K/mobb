@@ -3,9 +3,9 @@ import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
-import { RequestId } from '@infrastructure/log/context/decorators/request-context.decorator'; // 속성 데코레이터
 import { HealthService } from './health.service';
 import { GetHealthStatusQuery, OtherEvent } from './event';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @QueryHandler(GetHealthStatusQuery)
 export class GetHealthStatusQueryHandler implements IQueryHandler<GetHealthStatusQuery> {

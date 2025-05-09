@@ -2,9 +2,9 @@ import { Injectable, Inject, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
-import { RequestId } from '@infrastructure/log/context/decorators/request-context.decorator';
+import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';;
 import { HealthCheckCompletedEvent } from './event';
+import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @Injectable()
 export class HealthService {
