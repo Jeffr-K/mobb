@@ -6,6 +6,12 @@ import { MikroORM } from '@mikro-orm/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import expressBasicAuth from 'express-basic-auth';
+import { loadEnv } from './infrastructure/utils/funcs/env-utils';
+
+loadEnv();
+
+const API_DOCS_URL_PREFIX = 'api-docs';
 
 async function bootstrap() {
   try {
@@ -15,6 +21,16 @@ async function bootstrap() {
 
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
+    app.use(
+      API_DOCS_URL_PREFIX,
+      expressBasicAuth({
+        challenge: true,
+        users: {
+          [process.env.SWAGGER_USERNAME || 'admin']: process.env.SWAGGER_PASSWORD || 'admin',
+        },
+      }),
+    );
+
     const config = new DocumentBuilder()
       .setTitle('Persona API Documentation')
       .setDescription('Persona API Documentation')
@@ -23,7 +39,7 @@ async function bootstrap() {
       .build();
 
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api-docs', app, documentFactory);
+    SwaggerModule.setup(API_DOCS_URL_PREFIX, app, documentFactory);
 
     app.setGlobalPrefix('api');
     app.enableVersioning({

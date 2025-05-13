@@ -1,11 +1,10 @@
-import { FeedCategory } from '@modules/feed/core/entity/feed-category';
 import { Nullable } from '@infrastructure/utils/types/types';
 
 export class CategoryCreateCommandEvent {
   readonly name: string;
-  readonly parentCategoryUuid?: string | null;
+  readonly parentCategoryUuid?: Nullable<string>;
 
-  constructor(data: { name: string; parentCategoryUuid?: string | null }) {
+  constructor(data: { name: string; parentCategoryUuid?: Nullable<string> }) {
     this.name = data.name;
     this.parentCategoryUuid = data.parentCategoryUuid ? data.parentCategoryUuid : null;
   }
@@ -14,12 +13,12 @@ export class CategoryCreateCommandEvent {
 export class CategoryEditCommandEvent {
   readonly categoryUuid: string;
   readonly name: string;
-  readonly parent?: FeedCategory | null;
+  readonly parentCategoryUuid?: Nullable<string>;
 
-  constructor(data: { categoryUuid: string; name: string; parent?: Nullable<FeedCategory> }) {
+  constructor(data: { categoryUuid: string; name: string; parentCategoryUuid: Nullable<string> }) {
     this.categoryUuid = data.categoryUuid;
     this.name = data.name;
-    this.parent = data.parent ? data.parent : null;
+    this.parentCategoryUuid = data.parentCategoryUuid ? data.parentCategoryUuid : null;
   }
 }
 

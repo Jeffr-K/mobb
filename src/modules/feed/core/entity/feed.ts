@@ -1,4 +1,4 @@
-import { Embedded, Entity, EntityRepositoryType, ManyToOne, PrimaryKey } from '@mikro-orm/core';
+import { Collection, Embedded, Entity, EntityRepositoryType, ManyToOne, OneToMany, PrimaryKey } from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { Property } from '@mikro-orm/postgresql';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
@@ -8,6 +8,7 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { User } from '@modules/user/core/entity/user';
 import { FeedImage } from '@modules/feed/interface/adapter/adapter';
 import { FeedCategory } from '@modules/feed/core/entity/feed-category';
+import { File } from '@modules/file/core/entity/file';
 
 @Entity({ repository: () => FeedRepository })
 export class Feed extends AggregateRoot {
@@ -46,6 +47,9 @@ export class Feed extends AggregateRoot {
     hidden: false,
   })
   category!: FeedCategory;
+
+  @OneToMany(() => File, (file) => file.feed, { nullable: true, orphanRemoval: true })
+  files = new Collection<File>(this);
 
   constructor() {
     super();

@@ -54,7 +54,6 @@ export class HealthController {
     };
   }
 
-
   @Post('command')
   async runCommand(@Body() body: { checkType: string; params?: Record<string, any> }): Promise<any> {
     this.logger.log(`HealthController: Running command with requestId: ${this.requestId}`);

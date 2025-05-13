@@ -1,4 +1,13 @@
-import { Embedded, Entity, EntityRepositoryType, Enum, OneToOne, PrimaryKey } from '@mikro-orm/core';
+import {
+  Collection,
+  Embedded,
+  Entity,
+  EntityRepositoryType,
+  Enum,
+  OneToMany,
+  OneToOne,
+  PrimaryKey,
+} from '@mikro-orm/core';
 import { AggregateRootIdentifier } from '@infrastructure/utils/structure/aggregate-root-id';
 import { UserRepository } from '@modules/user/infrastructure/repository/user.repository';
 import { UserDropdownCommand, UserRegisterCommand } from '@modules/user/core/command/user.command.event';
@@ -10,10 +19,12 @@ import { Phone } from '@modules/user/core/value/embeddable/phone';
 import { Timestamp } from '@infrastructure/database/postgres/timestamp';
 import { Agreements } from '@modules/user/core/value/embeddable/agreements';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { File } from '@modules/file/core/entity/file';
 
 import day from 'dayjs';
 import { Role } from '@modules/user/core/value/enum/role';
 import { Profile } from '@modules/user/core/entity/profile';
+import { Feed } from '@/modules/feed/core/entity/feed';
 
 @Entity({ repository: () => UserRepository })
 export class User extends AggregateRoot {
@@ -49,14 +60,17 @@ export class User extends AggregateRoot {
   @OneToOne(() => Profile, (profile) => profile.user, { owner: true, lazy: true })
   profile: Profile;
 
-  // @OneToMany({
-  //   entity: () => Feed,
-  //   mappedBy: feed => feed.writer,
-  //   lazy: true,
-  //   orphanRemoval: true,
-  //   hidden: true,
-  // })
-  // feeds = new Collection<Feed>(this);
+  @OneToMany(() => File, (file) => file.user, { nullable: true, orphanRemoval: true })
+  files: Collection<File> = new Collection<File>(this);
+
+  @OneToMany({
+    entity: () => Feed,
+    mappedBy: (feed) => feed.writer,
+    lazy: true,
+    orphanRemoval: true,
+    hidden: true,
+  })
+  feeds = new Collection<Feed>(this);
   //
   // @OneToMany({
   //   entity: () => Comment,

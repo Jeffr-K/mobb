@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import {
   REQUEST_CONTEXT_ENABLED,
   REQUEST_CONTEXT_OPTIONS,
-  RequestContextOptions,
+  AsyncRequestContextOptions,
   getAsyncLocalStorage,
   getRequestId,
   runWithRequestContext,
@@ -11,7 +11,7 @@ import {
 /**
  * 메서드 실행 시 현재 요청 컨텍스트를 유지하고 CQRS 객체에 요청 ID를 전파하는 데코레이터
  */
-export function WithRequestContext(options: RequestContextOptions = {}) {
+export function TraceAsyncRequest(options: AsyncRequestContextOptions = {}) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     // 메타데이터 설정
     Reflect.defineMetadata(REQUEST_CONTEXT_ENABLED, true, target, propertyKey);

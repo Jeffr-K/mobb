@@ -9,9 +9,7 @@ import { Scope } from '@sentry/node';
 
 @Injectable()
 export class SentryInterceptor implements NestInterceptor {
-  constructor(
-    @Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage?: AsyncLocalStorage<Map<string, any>>,
-  ) {}
+  constructor(@Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage?: AsyncLocalStorage<Map<string, any>>) {}
 
   /**
    * Sentry Interceptor

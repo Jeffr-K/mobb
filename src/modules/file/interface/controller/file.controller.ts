@@ -1,39 +1,47 @@
-// https://joojae.com/nestjs-large-file-upload-with-presigned-url-and-s3-multipart-upload/
+import { Controller, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { MinioService } from '@/infrastructure/database/minio/minio.service';
+import { TokenGuard } from '@/modules/auth/infrastructure/guard/jwt.v2.guard';
+import { SessionValidationGuard } from '@/modules/auth/infrastructure/guard/session-validation.guard';
+import { RolesGuard } from '@/modules/auth/infrastructure/guard/roles.guard';
+import { Roles } from '@/modules/auth/infrastructure/decorators/roles.decorator';
+import { Role } from '@/modules/user/core/value/enum/role';
+import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FileResizePipe } from '../../infrastucture/pipes/file-resize.pipe';
+import { FileResizeService } from './file.resize.service';
 
-import { BadRequestException, Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { BucketService } from '@infrastructure/aws/bucket.service';
-import { FilePresignedUrlRegisterAdapter } from '@modules/file/interface/adapter/in/file.command.adapter';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { logger } from '@mikro-orm/nestjs';
-
-@Controller({ path: 'file', version: ['1'] })
+@ApiTags('Files')
+@Controller({ path: 'files', version: ['1'] })
 export class FileController {
-  constructor(private readonly bucketService: BucketService) {}
+  constructor(private readonly minioService: MinioService, private readonly fileResizeService: FileResizeService) {}
 
-  @Post('/presigned-url')
-  async getPresignedUrl(@Body() adapter: FilePresignedUrlRegisterAdapter): Promise<string> {
-    return await this.bucketService.getPresignedUrl({
-      fileOwner: adapter.fileOwner,
-      fileUsage: adapter.fileUsage,
-      fileFormat: adapter.fileUsage,
-    });
+  @Post('multiple-upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: '파일 목록 업로드', description: '파일 목록 업로드.' })
+  @ApiResponse({
+    status: 200,
+    description: '파일 업로드 성공',
+    type: String,
+  })
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadMultipleFiles(@UploadedFiles(FileResizePipe) files: Array<Express.Multer.File>) {
+    return Promise.all(files.map((file) => this.minioService.uploadFile('bucket-name', file as any)));
   }
 
-  @Post('/upload')
-  @UseInterceptors(FilesInterceptor('files', 10))
-  async upload(@UploadedFiles() files: Express.Multer.File[]) {
-    try {
-      const uploadedKeys = await this.bucketService.uploadFile(files);
-      return {
-        success: true,
-        keys: uploadedKeys,
-      };
-    } catch (error) {
-      logger.log(`Error uploading file: ${error.message}`);
-      throw new BadRequestException(error.message);
-    }
+  @Post('upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: '파일 단건 업로드', description: '파일 단건 업로드.' })
+  @ApiResponse({
+    status: 200,
+    description: '파일 업로드 성공',
+    type: String,
+  })
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
+  @Roles(Role.USER, Role.ADMIN)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile(FileResizePipe) file: Express.Multer.File) {
+    return await this.minioService.uploadFile('bucket-name', file as any);
   }
-
-  // @Delete('/remove')
-  // async remove() {}
 }

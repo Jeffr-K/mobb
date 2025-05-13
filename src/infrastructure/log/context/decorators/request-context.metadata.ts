@@ -7,9 +7,10 @@ export const REQUEST_CONTEXT_ENABLED = Symbol('request_context_enabled');
 export const REQUEST_CONTEXT_OPTIONS = Symbol('request_context_options');
 
 // 메타데이터 옵션 인터페이스
-export interface RequestContextOptions {
+export interface AsyncRequestContextOptions {
   propagateToCommandQuery?: boolean; // 커맨드/쿼리에 요청 ID를 전파할지
   logEntryExit?: boolean; // 메서드 진입/종료 시 로깅할지
+  logger?: any;
 }
 
 // AsyncLocalStorage 가져오기 유틸리티

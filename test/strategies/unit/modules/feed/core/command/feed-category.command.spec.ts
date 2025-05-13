@@ -287,7 +287,7 @@ describe('CommentCommandHandler', () => {
         const command = new CategoryEditCommandEvent({
           categoryUuid: existingParentCategory.identifier.uuid,
           name: existingParentCategory.name,
-          parent: null,
+          parentCategoryUuid: null,
         });
         beforeEach(() => {
           mockFeedCategoryRepository.selectFeedCategoryBy.mockResolvedValue(null);
@@ -307,7 +307,7 @@ describe('CommentCommandHandler', () => {
         const command = new CategoryEditCommandEvent({
           categoryUuid: existingParentCategory.identifier.uuid,
           name: existingParentCategory.name,
-          parent: null,
+          parentCategoryUuid: null,
         });
 
         beforeEach(() => {

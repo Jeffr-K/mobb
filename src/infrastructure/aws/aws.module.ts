@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BucketService } from '@infrastructure/aws/bucket.service';
-import { FileController } from '@modules/file/interface/controller/file.controller';
 import { S3Client } from '@aws-sdk/client-s3';
 
 @Module({
   imports: [ConfigModule],
-  controllers: [FileController],
+  controllers: [],
   providers: [
     BucketService,
     {

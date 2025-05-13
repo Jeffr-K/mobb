@@ -2,7 +2,7 @@ import { QueryHandler, IQueryHandler, QueryBus } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
+import { TraceAsyncRequest } from '@infrastructure/log/context/decorators/with-request-context.decorator';
 import { HealthService } from './health.service';
 import { GetHealthStatusQuery, OtherEvent } from './event';
 import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
@@ -16,10 +16,10 @@ export class GetHealthStatusQueryHandler implements IQueryHandler<GetHealthStatu
   constructor(
     private readonly healthService: HealthService,
     private readonly queryBus: QueryBus,
-    @Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>
+    @Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>,
   ) {}
 
-  @WithRequestContext()
+  @TraceAsyncRequest()
   async execute(query: GetHealthStatusQuery): Promise<any> {
     this.logger.log(`QueryHandler: Executing health status query with requestId: ${this.requestId}`);
 

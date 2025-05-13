@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
+import { TraceAsyncRequest } from '@infrastructure/log/context/decorators/with-request-context.decorator';
 import { HealthService } from './health.service';
 import { PerformHealthCheckCommand } from '@infrastructure/health/event';
 import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
@@ -15,10 +15,10 @@ export class PerformHealthCheckCommandHandler implements ICommandHandler<Perform
 
   constructor(
     private readonly healthService: HealthService,
-    @Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>
+    @Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>,
   ) {}
 
-  @WithRequestContext()
+  @TraceAsyncRequest()
   async execute(command: PerformHealthCheckCommand): Promise<string> {
     this.logger.log(`CommandHandler: Executing command with requestId: ${this.requestId}`);
 

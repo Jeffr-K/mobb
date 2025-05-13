@@ -3,7 +3,8 @@ import {
   Collection,
   Embedded,
   Entity,
-  EntityRepositoryType, ManyToOne,
+  EntityRepositoryType,
+  ManyToOne,
   OneToMany,
   PrimaryKey,
 } from '@mikro-orm/core';

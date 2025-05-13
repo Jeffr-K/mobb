@@ -99,7 +99,7 @@ import { fixedWidthPadEnd } from '@infrastructure/utils/funcs/string-utils';
             new winston.transports.File({
               filename: 'combined.log',
               format: jsonFormat,
-              maxsize: 10485760, // 10MB
+              maxsize: 10485760,
               maxFiles: 10,
             }),
             new SentryReportTransport({

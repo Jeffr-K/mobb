@@ -3,7 +3,7 @@ import { OtherEvent } from '@infrastructure/health/event';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
-import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
+import { TraceAsyncRequest } from '@infrastructure/log/context/decorators/with-request-context.decorator';
 import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
 @QueryHandler(OtherEvent)
@@ -13,7 +13,7 @@ export class HealthCheckOtherQueryEventHandler implements IQueryHandler<OtherEve
 
   constructor(@Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>) {}
 
-  @WithRequestContext()
+  @TraceAsyncRequest()
   async execute(query: OtherEvent): Promise<any> {
     this.logger.log(`Executing OtherEvent with name: ${this.requestId}`);
     this.logger.log(`=============나는 병신이다===============`);

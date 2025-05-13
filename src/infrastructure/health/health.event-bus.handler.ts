@@ -2,7 +2,7 @@ import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
 import { REQUEST_CONTEXT_STORAGE } from '@infrastructure/log/context/constants';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { WithRequestContext } from '@infrastructure/log/context/decorators/with-request-context.decorator';
+import { TraceAsyncRequest } from '@infrastructure/log/context/decorators/with-request-context.decorator';
 import { HealthCheckCompletedEvent } from '@infrastructure/health/event';
 import { RequestId } from '@infrastructure/log/context/decorators/requestId.decorator';
 
@@ -15,7 +15,7 @@ export class HealthCheckCompletedEventHandler implements IEventHandler<HealthChe
   constructor(@Inject(REQUEST_CONTEXT_STORAGE) private readonly asyncStorage: AsyncLocalStorage<Map<string, any>>) {}
 
   // 인터페이스 시그니처를 준수하면서도 컨텍스트 유지
-  @WithRequestContext({
+  @TraceAsyncRequest({
     logEntryExit: true,
     propagateToCommandQuery: true,
   })
