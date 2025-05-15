@@ -26,7 +26,9 @@ export class FileController {
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadMultipleFiles(@UploadedFiles(FileResizePipe) files: Array<Express.Multer.File>) {
+  async uploadMultipleFiles(
+    @UploadedFiles(FileResizePipe) files: Array<Express.Multer.File>,
+  ): Promise<Array<{ url: string }>> {
     return Promise.all(files.map((file) => this.minioService.uploadFile('bucket-name', file as any)));
   }
 
@@ -41,7 +43,7 @@ export class FileController {
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile(FileResizePipe) file: Express.Multer.File) {
+  async uploadFile(@UploadedFile(FileResizePipe) file: Express.Multer.File): Promise<{ url: string }> {
     return await this.minioService.uploadFile('bucket-name', file as any);
   }
 }

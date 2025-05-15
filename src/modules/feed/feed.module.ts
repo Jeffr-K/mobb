@@ -19,7 +19,6 @@ import { Feed } from '@modules/feed/core/entity/feed';
 import { CqrsModule } from '@nestjs/cqrs';
 import { FeedEventHistory } from '@modules/feed/core/entity/feed.event.history';
 import { AuthModule } from '@modules/auth/auth.module';
-import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { JwtService } from '@nestjs/jwt';
 import { CommentController } from '@modules/feed/interface/controller/comment.controller';
 import { Comment } from '@modules/feed/core/entity/comment';
@@ -43,7 +42,6 @@ export const categoryExceptionFilters = [{ provide: APP_FILTER, useClass: FeedCa
   imports: [AuthModule, CqrsModule, MikroOrmModule.forFeature([Feed, FeedEventHistory, Comment, FeedCategory])],
   controllers: [FeedController, FeedCategoryController, CommentController],
   providers: [
-    JwtAuthGuard,
     JwtService,
     FeedCreateCommandEventHandler,
     FeedEditCommandEventHandler,

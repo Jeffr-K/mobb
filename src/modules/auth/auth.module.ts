@@ -16,8 +16,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from 'src/infrastructure/database/redis/redis.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { JwtAuthGuard } from './infrastructure/guard/jwt.guard';
-import { JwtStrategy } from './infrastructure/stargegy/jwt.strategy';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SecureSession } from '@modules/auth/core/entity/secure.session';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
@@ -26,6 +24,7 @@ import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
 import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 import { TokenCommandHandler } from '@modules/auth/core/command/token.command.handler';
 import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
+import { JwtStrategy } from './infrastructure/stargegy/jwt.strategy';
 
 @Module({
   imports: [
@@ -48,11 +47,11 @@ import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/sessi
     MikroOrmModule.forFeature([SecureSession]),
   ],
   providers: [
+    JwtStrategy,
     TokenCommandHandler,
     RedisCacheService,
     RedisCacheRepository,
     SecureSessionCacheRepository,
-    JwtStrategy,
     LoginCommandEventHandler,
     LogoutCommandEventHandler,
     TokenService,
@@ -62,7 +61,6 @@ import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/sessi
     TokenGuard,
     RolesGuard,
     SessionValidationGuard,
-    JwtAuthGuard,
     {
       provide: SecureSessionRepository,
       useFactory: (em: EntityManager) => {
@@ -72,6 +70,6 @@ import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/sessi
     },
   ],
   controllers: [AuthController, OAuthController],
-  exports: [JwtAuthGuard, TokenGuard, RolesGuard, SecureSessionCacheRepository, SessionValidationGuard],
+  exports: [TokenGuard, RolesGuard, SecureSessionCacheRepository, SessionValidationGuard],
 })
 export class AuthModule {}

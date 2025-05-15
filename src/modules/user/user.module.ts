@@ -23,7 +23,6 @@ import { AuthModule } from '../auth/auth.module';
 import { RDBMSModule } from '@infrastructure/database/postgres/rdbms.module';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { ActivityRepository } from './infrastructure/repository/activity.repository';
-import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { JwtService } from '@nestjs/jwt';
 import { ProfileController } from '@modules/user/interface/controller/profile.controller';
 import { Experience } from '@modules/user/core/entity/experience';
@@ -63,7 +62,6 @@ import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
   ],
   controllers: [UserController, ProfileController],
   providers: [
-    JwtAuthGuard,
     TokenGuard, // TODO: 변경 예정
     RolesGuard, // TODO: 변경 예정
     JwtService,

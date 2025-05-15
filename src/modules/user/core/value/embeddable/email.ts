@@ -2,7 +2,7 @@ import { Embeddable, Property } from '@mikro-orm/postgresql';
 
 @Embeddable()
 export class Email {
-  @Property()
+  @Property({ unique: true })
   email: string;
 
   constructor(email: string) {

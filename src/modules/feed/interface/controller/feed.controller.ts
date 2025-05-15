@@ -1,20 +1,12 @@
-import {
-  Body,
-  Controller,
-  DefaultValuePipe,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Feed } from '@modules/feed/core/entity/feed';
-import { FeedCreateAdapter, FeedDeleteParamAdapter, FeedEditAdapter } from '@modules/feed/interface/adapter/adapter';
+import {
+  FeedCreateAdapter,
+  FeedDeleteParamAdapter,
+  FeedEditAdapter,
+  FeedQueriesAdapter,
+} from '@modules/feed/interface/adapter/adapter';
 import {
   FeedCreateCommandEvent,
   FeedDeleteCommandEvent,
@@ -29,15 +21,41 @@ import { User } from '@modules/user/core/entity/user';
 import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
 import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller({ path: 'feed', version: ['1'] })
+@ApiTags('Feeds')
+@Controller({ path: 'feeds', version: ['1'] })
 export class FeedController {
   constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Get('/')
+  @ApiOperation({ summary: '피드 목록 조회' })
+  @ApiResponse({ status: 200, description: '조회 성공' })
+  @ApiResponse({ status: 400, description: '잘못된 요청' })
+  async feeds(@Query() query: FeedQueriesAdapter): Promise<BusinessResponse<PaginatedResponse<Feed>>> {
+    const feeds = await this.queryBus.execute(
+      new FeedsQueryEvent({
+        page: query.page,
+        size: query.size,
+        sort: query.sort,
+        limit: query.limit,
+      }),
+    );
+    return new BusinessResponse(feeds, '조회 성공', HttpStatus.OK);
+  }
+
+  @Get('/:feedId')
+  async feed(@Param('feedId') feedId: string): Promise<BusinessResponse<Feed>> {
+    const feed = await this.queryBus.execute(new FeedQueryEvent({ feedId }));
+    return new BusinessResponse<Feed>(feed, '조회 성공', HttpStatus.OK);
+  }
 
   @Post('/')
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async createFeed(@Secured() user: User, @Body() adapter: FeedCreateAdapter): Promise<void> {
+    // TODO: set userId and publish feed create event to user domain(setFeed)
+    // TODO: set fileId and publish feed create event to file domain(setFile)
     await this.commandBus.execute(
       new FeedCreateCommandEvent({
         title: adapter.title,
@@ -64,23 +82,5 @@ export class FeedController {
         images: adapter.images,
       }),
     );
-  }
-
-  @Get('/list')
-  async feeds(
-    @Query('page', new DefaultValuePipe(0), ParseIntPipe) page: number,
-    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
-    @Query('sort', new DefaultValuePipe('createdAt:desc')) sort: string,
-    @Query('limit', new DefaultValuePipe('10'), ParseIntPipe) limit: number,
-  ): Promise<BusinessResponse<PaginatedResponse<Feed>>> {
-    const feeds = await this.queryBus.execute(new FeedsQueryEvent({ page, size, sort, limit }));
-    // TODO: response serializer 구현해야함
-    return new BusinessResponse(feeds, '조회 성공', HttpStatus.OK);
-  }
-
-  @Get('/:feedId')
-  async feed(@Param('feedId') feedId: string): Promise<BusinessResponse<Feed>> {
-    const feed = await this.queryBus.execute(new FeedQueryEvent({ feedId }));
-    return new BusinessResponse<Feed>(feed, '조회 성공', HttpStatus.OK);
   }
 }

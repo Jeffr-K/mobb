@@ -33,7 +33,6 @@ import { Roles } from '@modules/auth/infrastructure/decorators/roles.decorator';
 import { Role } from '@modules/user/core/value/enum/role';
 import { User } from '@modules/user/core/entity/user';
 import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
-import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { Experience } from '@modules/user/core/entity/experience';
 import { Education } from '@modules/user/core/entity/education';
 import { Activity } from '@modules/user/core/entity/activity';
@@ -61,7 +60,7 @@ export class ProfileController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfile(@Secured() user: User): Promise<BusinessResponse<Profile>> {
     const profile = await this.queryBus.execute(
@@ -71,7 +70,7 @@ export class ProfileController {
   }
 
   @Get('/persona')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfilePersona(@Secured() user: User): Promise<BusinessResponse<ProfilePersonaResponseAdapter>> {
     const persona = await this.queryBus.execute(new ProfilePersonaSearchQuery({ user: user }));
@@ -79,7 +78,7 @@ export class ProfileController {
   }
 
   @Put('/persona')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async editProfilePersona(@Secured() user: User, @Body() adapter: ProfilePersonaEditCommandAdapter): Promise<void> {
     return await this.commandBus.execute(new ProfilePersonaEditCommandEvent({ ...adapter, user: user }));
@@ -93,7 +92,7 @@ export class ProfileController {
   // }
 
   @Post('/skill')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async registerProfileSkill(
     @Secured() user: User,
@@ -103,7 +102,7 @@ export class ProfileController {
   }
 
   @Put('/skill')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async editProfileSkill(@Secured() user: User, @Body() adapter: ProfileSkillEditCommandAdapter): Promise<void> {
     return await this.commandBus.execute(new ProfileSkillRegisterCommand({ ...adapter, user: user }));
@@ -117,7 +116,7 @@ export class ProfileController {
   // }
 
   @Post('/experience')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async registerProfileExperience(
     @Secured() user: User,
@@ -127,7 +126,7 @@ export class ProfileController {
   }
 
   @Get('/experiences')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfileExperiences(@Secured() user: User): Promise<BusinessResponse<Experience[]>> {
     const experiences = await this.queryBus.execute(new ProfileExperiencesSearchQuery({ user: user }));
@@ -135,7 +134,7 @@ export class ProfileController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async registerProfileEducation(
     @Secured() user: User,
@@ -145,7 +144,7 @@ export class ProfileController {
   }
 
   @Put()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async editProfileEducation(
     @Secured() user: User,
@@ -155,7 +154,7 @@ export class ProfileController {
   }
 
   @Get('/educations')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfileEducations(@Secured() user: User): Promise<Education[]> {
     return await this.queryBus.execute(new ProfileEducationsSearchQuery({ user: user }));
@@ -170,7 +169,7 @@ export class ProfileController {
   }
 
   @Post('/activity')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async registerProfileActivity(
     @Secured() user: User,
@@ -180,7 +179,7 @@ export class ProfileController {
   }
 
   @Post('/garage')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async registerProfileGarage(
     @Secured() user: User,
@@ -204,7 +203,7 @@ export class ProfileController {
   // }
   //
   @Get('/garages')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfileGarages(@Secured() user: User): Promise<BusinessResponse<Garage[]>> {
     const garages = await this.queryBus.execute(new ProfileGaragesSearchQuery({ user: user }));
@@ -212,7 +211,7 @@ export class ProfileController {
   }
 
   @Get('/garage')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async getProfileGarage(
     @Secured() user: User,

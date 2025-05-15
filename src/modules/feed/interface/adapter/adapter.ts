@@ -10,6 +10,8 @@ import {
   IsString,
   IsUrl,
   IsUUID,
+  Matches,
+  Max,
   MaxLength,
   Min,
   MinLength,
@@ -198,4 +200,58 @@ export class PaginatedCategoryResponseAdapter {
 
   @ApiProperty({ description: '페이지당 항목 수', example: 10 })
   pageSize: number;
+}
+
+export class FeedQueriesAdapter {
+  @ApiProperty({
+    description: '페이지 번호 (0부터 시작)',
+    type: Number,
+    required: false,
+    default: 0,
+    example: 0,
+  })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @Min(0)
+  readonly page: number = 0;
+
+  @ApiProperty({
+    description: '페이지당 항목 수',
+    type: Number,
+    required: false,
+    default: 10,
+    example: 10,
+  })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @Min(1)
+  @Max(100)
+  readonly size: number = 10;
+
+  @ApiProperty({
+    description: '정렬 기준 (필드명:asc|desc)',
+    type: String,
+    required: false,
+    default: 'createdAt:desc',
+    example: 'createdAt:desc',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(/^[a-zA-Z0-9]+:(asc|desc)$/)
+  readonly sort: string = 'createdAt:desc';
+
+  @ApiProperty({
+    description: '건너뛸 레코드 수 (페이지네이션에서 시작 위치 지정)',
+    type: Number,
+    required: false,
+    default: 0,
+    example: 0,
+  })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @Min(0)
+  readonly limit: number = 0;
 }

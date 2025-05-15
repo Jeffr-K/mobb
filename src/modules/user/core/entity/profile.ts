@@ -41,7 +41,7 @@ export class Profile extends AggregateRoot {
   @OneToMany(() => Garage, (garage) => garage.profile, { nullable: true })
   garage = new Collection<Garage>(this);
 
-  @OneToOne(() => User, (user) => user.profile, { orphanRemoval: true })
+  @OneToOne(() => User, (user) => user.profile, { orphanRemoval: true, lazy: true })
   user: User;
 
   @Embedded({ prefix: false })

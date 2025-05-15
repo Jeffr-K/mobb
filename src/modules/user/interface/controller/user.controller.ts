@@ -24,11 +24,15 @@ import {
   UserEditPasswordCommand,
   UserRegisterCommand,
 } from '@modules/user/core/command/user.command.event';
-import { JwtAuthGuard } from '@modules/auth/infrastructure/guard/jwt.guard';
 import { UseSearchModelSerializer } from '@modules/user/interface/adapter/out/user.serializer';
 import { UserSearchQuery, UsersSearchQuery } from '@modules/user/core/query/event/user.query.event';
 import { User } from '@modules/user/core/entity/user';
 import { Secured } from '@modules/auth/infrastructure/guard/token.guard.decorator';
+import { RolesGuard } from '@/modules/auth/infrastructure/guard/roles.guard';
+import { SessionValidationGuard } from '@/modules/auth/infrastructure/guard/session-validation.guard';
+import { TokenGuard } from '@/modules/auth/infrastructure/guard/jwt.v2.guard';
+import { Roles } from '@/modules/auth/infrastructure/decorators/roles.decorator';
+import { Role } from '../../core/value/enum/role';
 
 @Controller({ path: 'user', version: ['1'] })
 export class UserController {
@@ -79,7 +83,8 @@ export class UserController {
   }
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
+  @Roles(Role.USER, Role.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   async user(@Secured() user: User): Promise<UseSearchModelSerializer> {
     const result = await this.queryBus.execute(new UserSearchQuery(user._id));
@@ -87,7 +92,8 @@ export class UserController {
   }
 
   @Get('/list')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
+  @Roles(Role.USER, Role.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   async users(
     @Secured() user: User,
