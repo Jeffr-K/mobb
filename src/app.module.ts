@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@infrastructure/database/database.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from '@infrastructure/log/logger.module';
-import { HealthModule } from '@infrastructure/health/health.module';
+// import { HealthModule } from '@infrastructure/health/health.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { HealthModule } from '@infrastructure/health/health.module';
     DatabaseModule,
     EventEmitterModule.forRoot(),
     LoggerModule,
-    HealthModule,
+    // HealthModule,
   ],
   exports: [...domainModules, ConfigModule, DatabaseModule],
 })

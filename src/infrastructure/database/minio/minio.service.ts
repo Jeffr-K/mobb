@@ -6,12 +6,13 @@ import { BufferedFile } from './bufferedFile';
 export class MinioService {
   constructor(private readonly minioRepository: MinioRepository) {}
 
-  async uploadFile(bucketName: string, file: BufferedFile): Promise<{ url: string }> {
+  async uploadFile(bucketName: string, file: BufferedFile): Promise<{ bucketName: string; url: string }> {
     const metaData = {
       'Content-Type': file.mimetype,
     };
 
-    return await this.minioRepository.upload(bucketName, file, metaData);
+    const uploadedFile = await this.minioRepository.upload(bucketName, file, metaData);
+    return { bucketName: bucketName, url: uploadedFile.url };
   }
 
   async deleteFile(bucketName: string, fileName: string): Promise<void> {

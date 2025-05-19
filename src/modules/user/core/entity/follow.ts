@@ -15,11 +15,11 @@ export class Follow {
   @Embedded({ prefix: false })
   identifier: AggregateRootIdentifier;
 
-  @ManyToOne()
-  from!: User;
-
-  @ManyToOne()
-  to!: User;
+  // @ManyToOne()
+  // from!: User;
+  //
+  // @ManyToOne()
+  // to!: User;
 
   @Property()
   accepted: boolean;

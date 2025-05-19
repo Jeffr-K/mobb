@@ -20,7 +20,7 @@ export class FeedCategoryCreateCommandEventHandler implements ICommandHandler<Ca
   constructor(private readonly em: EntityManager, private readonly feedCategoryRepository: FeedCategoryRepository) {}
 
   // TODO: 카테고리는 데이터가 많지 않으므로, 다 끌고와서 연산하는것도 나쁘진 않곘네.
-  @Transactional()
+  // @Transactional()
   async execute(command: CategoryCreateCommandEvent): Promise<FeedCategory> {
     try {
       switch (true) {

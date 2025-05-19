@@ -19,7 +19,7 @@ async function bootstrap() {
       cors: true,
     });
 
-    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+    // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
     app.use(
       API_DOCS_URL_PREFIX,

@@ -19,3 +19,11 @@ export class FeedCategoriesQuery {
     this.orderBy = data.orderBy;
   }
 }
+
+export class FeedCategoriesBulkSearchQuery {
+  readonly feedIds: number[];
+
+  constructor(data: { feedIds: number[] }) {
+    this.feedIds = data.feedIds;
+  }
+}

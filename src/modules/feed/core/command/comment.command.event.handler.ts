@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import {
   CommentEditCommandEvent,
   CommentRegisterCommandEvent,
@@ -21,23 +21,39 @@ import {
 import { CommentRepository } from '@modules/feed/infrastructure/repository/comment.repository';
 import { Comment } from '@modules/feed/core/entity/comment';
 import { FeedCategoryQuery } from '../query/category.query.event';
+import { FileUpdateCommand } from '@/modules/file/core/event/event';
 
 @CommandHandler(FeedCreateCommandEvent)
 export class FeedCreateCommandEventHandler implements ICommandHandler<FeedCreateCommandEvent> {
   constructor(
     @Inject(EntityManager) private readonly entityManager: EntityManager,
     private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async execute(command: FeedCreateCommandEvent): Promise<void> {
     await this.entityManager.transactional(async (manager: EntityManager): Promise<void> => {
       try {
         const feedCategory = await this.queryBus.execute(new FeedCategoryQuery({ categoryUuid: command.categoryUuid }));
-        const feed = await Feed.register({ ...command, ...feedCategory });
+        const feed = await Feed.register({
+          title: command.title,
+          content: command.content,
+          images: command.images,
+          user: command.user,
+          category: feedCategory,
+        });
+
         const history = await FeedEventHistory.register({ eventType: 'create', eventContent: 'create feed' });
         await manager.persistAndFlush(feed);
         await manager.persistAndFlush(history);
         await manager.commit();
+
+        await this.commandBus.execute(
+          new FileUpdateCommand({
+            images: command.images,
+            feed: feed,
+          }),
+        );
       } catch (error) {
         logger.error('FeedRegistrationFailedException', error);
         await manager.rollback();

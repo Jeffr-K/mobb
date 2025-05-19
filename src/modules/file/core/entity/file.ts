@@ -32,13 +32,19 @@ export class File extends AggregateRoot {
   @Property()
   encoding: string;
 
+  @Property()
+  url: string;
+
+  @Property()
+  bucketName: string;
+
   @Embedded({ prefix: false })
   timestamp: Timestamp;
 
   @ManyToOne(() => User, { lazy: true })
   user!: User;
 
-  @ManyToOne(() => Feed, { lazy: true })
+  @ManyToOne(() => Feed, { lazy: true, nullable: true })
   feed!: Feed;
 
   constructor() {

@@ -28,6 +28,14 @@ export class ProfilesSearchQuery {
   }
 }
 
+export class ProfileBulkSearchQuery {
+  readonly userIds: number[];
+
+  constructor(data: { userIds: number[] }) {
+    this.userIds = data.userIds;
+  }
+}
+
 export class ProfilePersonaSearchQuery {
   readonly user: User;
 

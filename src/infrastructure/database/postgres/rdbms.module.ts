@@ -26,6 +26,9 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
         path.resolve(process.cwd(), 'dist/modules/*/**/core/value/embeddable/*.js'),
         path.resolve(process.cwd(), 'dist/infrastructure/utils/structure/*.ts'),
       ],
+      serialization: {
+        forceObject: true,
+      },
       discovery: {
         warnWhenNoEntities: false,
         requireEntitiesArray: false,

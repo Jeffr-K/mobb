@@ -78,7 +78,7 @@ export class OrganizationEditCommandHandler {
     private readonly organizationRepository: OrganizationRepository,
   ) {}
 
-  @Transactional()
+  // @Transactional()
   async execute(command: OrganizationEditCommand): Promise<void> {
     const organization = await this.organizationRepository.selectOrganizationBy({
       uuid: command.data.uuid,

@@ -22,6 +22,7 @@ import { RolesGuard } from '@modules/auth/infrastructure/guard/roles.guard';
 import { TokenGuard } from '@modules/auth/infrastructure/guard/jwt.v2.guard';
 import { SessionValidationGuard } from '@modules/auth/infrastructure/guard/session-validation.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FeedQueryResponse } from '../../core/query/out/feeds.query.outbound.port';
 
 @ApiTags('Feeds')
 @Controller({ path: 'feeds', version: ['1'] })
@@ -32,13 +33,12 @@ export class FeedController {
   @ApiOperation({ summary: '피드 목록 조회' })
   @ApiResponse({ status: 200, description: '조회 성공' })
   @ApiResponse({ status: 400, description: '잘못된 요청' })
-  async feeds(@Query() query: FeedQueriesAdapter): Promise<BusinessResponse<PaginatedResponse<Feed>>> {
+  async feeds(@Query() query: FeedQueriesAdapter): Promise<BusinessResponse<PaginatedResponse<FeedQueryResponse>>> {
     const feeds = await this.queryBus.execute(
       new FeedsQueryEvent({
         page: query.page,
         size: query.size,
         sort: query.sort,
-        limit: query.limit,
       }),
     );
     return new BusinessResponse(feeds, '조회 성공', HttpStatus.OK);
@@ -54,8 +54,6 @@ export class FeedController {
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
   async createFeed(@Secured() user: User, @Body() adapter: FeedCreateAdapter): Promise<void> {
-    // TODO: set userId and publish feed create event to user domain(setFeed)
-    // TODO: set fileId and publish feed create event to file domain(setFile)
     await this.commandBus.execute(
       new FeedCreateCommandEvent({
         title: adapter.title,

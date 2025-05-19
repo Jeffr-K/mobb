@@ -71,33 +71,6 @@ export class User extends AggregateRoot {
     hidden: true,
   })
   feeds = new Collection<Feed>(this);
-  //
-  // @OneToMany({
-  //   entity: () => Comment,
-  //   mappedBy: comment => comment.writer,
-  //   lazy: true,
-  //   orphanRemoval: true,
-  //   hidden: true,
-  // })
-  // comments = new Collection<Comment>(this);
-  //
-  // @OneToMany({
-  //   entity: () => Bookmark,
-  //   mappedBy: bookmark => bookmark.user,
-  //   lazy: true,
-  //   orphanRemoval: true,
-  //   hidden: true,
-  // })
-  // bookmarks = new Collection<Bookmark>(this);
-  //
-  // @OneToMany({
-  //   entity: () => Share,
-  //   mappedBy: share => share.user,
-  //   lazy: true,
-  //   orphanRemoval: true,
-  //   hidden: true,
-  // })
-  // share = new Collection<Share>(this);
 
   constructor() {
     super();
@@ -122,7 +95,7 @@ export class User extends AggregateRoot {
       deletedAt: day().toDate(),
     });
 
-    command.user.apply(new UserDropdownCommand(command.user.email.email));
+    command.user.apply(new UserDropdownCommand(command.user.email.value));
 
     return this;
   }

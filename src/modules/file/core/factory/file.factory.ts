@@ -38,6 +38,16 @@ export class FileConcreteBuilder {
     return this;
   }
 
+  setBucketName(bucketName: string): this {
+    this.file.bucketName = bucketName;
+    return this;
+  }
+
+  setFileUrl(url: string): this {
+    this.file.url = url;
+    return this;
+  }
+
   setTimestamp(): this {
     this.file.timestamp = {
       createdAt: new Date(),

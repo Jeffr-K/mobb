@@ -1,16 +1,4 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Delete,
-  Get,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   UserDropdownCommandAdapter,
@@ -82,27 +70,26 @@ export class UserController {
     );
   }
 
+  // TODO: 반환 타입: BusinessResponse<T>
   @Get('/')
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
-  async user(@Secured() user: User): Promise<UseSearchModelSerializer> {
+  async user(@Secured() user: User): Promise<any> {
     const result = await this.queryBus.execute(new UserSearchQuery(user._id));
-    return new UseSearchModelSerializer(result);
+    return new UseSearchModelSerializer(result).json();
   }
 
+  // TODO: 반환 타입: BusinessResponse<T>
   @Get('/list')
   @UseGuards(TokenGuard, SessionValidationGuard, RolesGuard)
   @Roles(Role.USER, Role.ADMIN)
-  @UseInterceptors(ClassSerializerInterceptor)
   async users(
     @Secured() user: User,
     @Query('page', ParseIntPipe) page: number,
     @Query('offset', ParseIntPipe) offset: number,
     @Query('limit', ParseIntPipe) limit: number,
-  ): Promise<UseSearchModelSerializer[]> {
+  ): Promise<any[]> {
     const users = await this.queryBus.execute(new UsersSearchQuery({ page, offset, limit }));
-
-    return users.map((user: User) => new UseSearchModelSerializer(user));
+    return users.map((user: User) => new UseSearchModelSerializer(user).json());
   }
 }

@@ -4,13 +4,15 @@ export class FeedsQueryEvent {
   readonly page: number;
   readonly size: number;
   readonly sort: string;
-  readonly limit: number;
 
-  constructor(event: { page: number; size: number; sort: string; limit: number }) {
+  readonly categoryId?: Nullable<number>;
+
+  constructor(event: { page: number; size: number; sort: string; categoryId?: Nullable<number> }) {
     this.page = event.page;
     this.size = event.size;
     this.sort = event.sort;
-    this.limit = event.limit;
+
+    this.categoryId = event.categoryId;
   }
 }
 

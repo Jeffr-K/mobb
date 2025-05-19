@@ -15,7 +15,6 @@ import {
   MaxLength,
   Min,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -23,6 +22,11 @@ import { Sanitized } from '@infrastructure/utils/system/sanitize';
 import { Nullable } from '@/infrastructure/utils/types/types';
 
 export class FeedImage {
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID('4')
+  uuid: string;
+
   @IsString()
   @IsUrl()
   url: string;
@@ -41,18 +45,16 @@ export class FeedCreateAdapter {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(10)
+  @MinLength(1)
   @MaxLength(300)
   @Sanitized()
   readonly content: string;
 
   @IsOptional()
   @IsArray()
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
   @Type(() => FeedImage)
   @ArrayMaxSize(10)
-  readonly images: FeedImage[];
+  readonly images?: Nullable<Array<FeedImage>>;
 
   @IsString()
   @IsNotEmpty()
@@ -243,15 +245,13 @@ export class FeedQueriesAdapter {
   readonly sort: string = 'createdAt:desc';
 
   @ApiProperty({
-    description: '건너뛸 레코드 수 (페이지네이션에서 시작 위치 지정)',
+    description: '카테고리 아이디',
     type: Number,
     required: false,
-    default: 0,
-    example: 0,
+    example: '1',
   })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  @Min(0)
-  readonly limit: number = 0;
+  readonly categoryId?: Nullable<number>;
 }

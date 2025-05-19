@@ -12,20 +12,32 @@ import { PaginatedResponse } from '@infrastructure/utils/base/base-response';
 import { CommentRepository } from '@modules/feed/infrastructure/repository/comment.repository';
 import { Comment } from '@modules/feed/core/entity/comment';
 import { NotFoundException } from '@nestjs/common';
+import { FeedQueryResponse, FeedQueryEventOutBoundAdapter } from './out/feeds.query.outbound.port';
 
 @QueryHandler(FeedsQueryEvent)
 export class FeedsQueryEventHandler implements IQueryHandler<FeedsQueryEvent> {
   constructor(@InjectRepository(Feed) private readonly feedRepository: FeedRepository) {}
 
-  async execute(query: FeedsQueryEvent): Promise<PaginatedResponse<Feed>> {
+  async execute(query: FeedsQueryEvent): Promise<PaginatedResponse<FeedQueryResponse>> {
     const feeds = await this.feedRepository.selectFeedsBy({
       page: query.page,
       size: query.size,
       sort: query.sort,
-      limit: Number(query.limit),
+      withJoin: {
+        category: true,
+        profile: true,
+        files: true,
+      },
     });
 
-    return feeds;
+    if (feeds.items.length === 0) {
+      return {
+        ...feeds,
+        items: [],
+      };
+    }
+
+    return new FeedQueryEventOutBoundAdapter().mapTo(feeds);
   }
 }
 
